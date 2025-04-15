@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    # 这里改成自己 Mysql 数据库的地址
+    # 改完之后不要提交这个文件!!!
+    password:
