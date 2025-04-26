@@ -1,5 +1,7 @@
 package com.code.cetboot.service;
 
+import com.code.cetboot.bean.Result;
+import com.code.cetboot.dto.UserDTO;
 import com.code.cetboot.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -9,5 +11,23 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-04-26 01:53:46
 */
 public interface UserService extends IService<User> {
+    /**
+     * 用户登录
+     * @param userDTO 用户信息
+     * @return 登录结果
+     */
+    Result login(UserDTO userDTO);
 
+    /**
+     * 用户注册
+     * @param userDTO 用户信息
+     * @return 注册结果
+     */
+    Result register(UserDTO userDTO);
+
+    /**
+     * 用户注销
+     * @return 注销结果
+     */
+    Result logout();
 }
