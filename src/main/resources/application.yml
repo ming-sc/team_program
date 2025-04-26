@@ -17,6 +17,10 @@ spring:
       max-lifetime: 1800000
   profiles:
     active: '@env@'
+  cache:
+    redis:
+      key-prefix: cetboot
+      use-key-prefix: true
 
 logging:
   file:
@@ -24,9 +28,10 @@ logging:
   level:
     com.code.cetboot: debug
 
+
 sa-token:
   # token 名称（同时也是 cookie 名称）
-  token-name: cetBoot:Authorization
+  token-name: Authorization
   # token前缀
   token-prefix: Bearer
   # 是否尝试从header里读取token

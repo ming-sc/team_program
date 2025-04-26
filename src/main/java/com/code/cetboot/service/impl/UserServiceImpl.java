@@ -25,6 +25,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Result login(UserDTO userDTO) {
+        if (StpUtil.isLogin()) {
+            return Result.fail("请先注销当前登录");
+        }
         String username = userDTO.getUserName();
         String password = userDTO.getPassword();
         password = MD5Util.encodeByMd5WithSalt(password, SecretConst.SALT);
@@ -73,11 +76,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         int result = baseMapper.insert(newUser);
         return result > 0 ? Result.success("注册成功") : Result.fail("注册失败");
-    }
-
-    @Override
-    public Result logout() {
-        return null;
     }
 }
 

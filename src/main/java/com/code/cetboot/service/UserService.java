@@ -24,10 +24,4 @@ public interface UserService extends IService<User> {
      * @return 注册结果
      */
     Result register(UserDTO userDTO);
-
-    /**
-     * 用户注销
-     * @return 注销结果
-     */
-    Result logout();
 }
