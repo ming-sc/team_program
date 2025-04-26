@@ -52,6 +52,20 @@ public class Result {
                 .build();
     }
 
+    public static Result fail() {
+        return Result.builder()
+                .code(ResultCode.FAILED.getCode())
+                .message(ResultCode.FAILED.getMessage())
+                .build();
+    }
+
+    public static Result fail(String message) {
+        return Result.builder()
+                .code(ResultCode.FAILED.getCode())
+                .message(message)
+                .build();
+    }
+
     public static Result notLogin(String message) {
         return Result.builder()
                 .code(ResultCode.NOT_LOGIN.getCode())
@@ -59,7 +73,7 @@ public class Result {
                 .build();
     }
 
-    public static Result forbidden(String message) {
+    public static Result notPermitted(String message) {
         return Result.builder()
                 .code(ResultCode.FORBIDDEN.getCode())
                 .message(message)
