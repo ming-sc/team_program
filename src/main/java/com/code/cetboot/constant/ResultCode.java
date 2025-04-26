@@ -1,4 +1,4 @@
-package com.code.cetboot.bean;
+package com.code.cetboot.constant;
 
 /**
  * @author : IMG

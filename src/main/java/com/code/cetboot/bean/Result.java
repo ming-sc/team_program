@@ -1,5 +1,6 @@
 package com.code.cetboot.bean;
 
+import com.code.cetboot.constant.ResultCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
