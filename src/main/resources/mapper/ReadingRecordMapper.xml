@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code.cetboot.mapper.ReadingRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.code.cetboot.entity.ReadingRecord">
+            <id property="readingRecordId" column="reading_record_id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="readingPracticeId" column="reading_practice_id" jdbcType="INTEGER"/>
+            <result property="score" column="score" jdbcType="INTEGER"/>
+            <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        reading_record_id,user_id,reading_practice_id,
+        score,record_time
+    </sql>
+</mapper>

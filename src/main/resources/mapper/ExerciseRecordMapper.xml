@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code.cetboot.mapper.ExerciseRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.code.cetboot.entity.ExerciseRecord">
+            <id property="exerciseRecordId" column="exercise_record_id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="exerciseId" column="exercise_id" jdbcType="INTEGER"/>
+            <result property="exerciseSelectionId" column="exercise_selection_id" jdbcType="INTEGER"/>
+            <result property="isCorrect" column="is_correct" jdbcType="INTEGER"/>
+            <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+            <result property="recordId" column="record_id" jdbcType="INTEGER"/>
+            <result property="recordType" column="record_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        exercise_record_id,user_id,exercise_id,
+        exercise_selection_id,is_correct,record_time,
+        record_id,record_type
+    </sql>
+</mapper>

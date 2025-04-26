@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code.cetboot.mapper.ExerciseMapper">
+
+    <resultMap id="BaseResultMap" type="com.code.cetboot.entity.Exercise">
+            <id property="exerciseId" column="exercise_id" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="answerSelectionId" column="answer_selection_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        exercise_id,content,answer_selection_id
+    </sql>
+</mapper>

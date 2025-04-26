@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code.cetboot.mapper.ListeningPracticeMapper">
+
+    <resultMap id="BaseResultMap" type="com.code.cetboot.entity.ListeningPractice">
+            <id property="listeningPracticeId" column="listening_practice_id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="audio" column="audio" jdbcType="VARCHAR"/>
+            <result property="exerciseCount" column="exercise_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        listening_practice_id,title,audio,
+        exercise_count
+    </sql>
+</mapper>
