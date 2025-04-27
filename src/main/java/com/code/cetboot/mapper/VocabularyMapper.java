@@ -3,6 +3,9 @@ package com.code.cetboot.mapper;
 import com.code.cetboot.entity.Vocabulary;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 19735
@@ -13,6 +16,13 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface VocabularyMapper extends BaseMapper<Vocabulary> {
 
+    /**
+     * 随机查询指定数量的词汇
+     *
+     * @param count 查询的数量
+     * @return 随机查询到的词汇列表
+     */
+    List<Vocabulary> selectBatchRandom(@Param("count") int count);
 }
 
 

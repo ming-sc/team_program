@@ -1,6 +1,9 @@
 package com.code.cetboot.dto;
 
+import com.code.cetboot.validation.VocabularyPracticeValidation;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author : IMG
@@ -12,10 +15,18 @@ public class VocabularyPracticeDTO {
     /**
      * 回答的中文意思
      */
+    @NotNull(
+            message = "选项不能为空",
+            groups = {VocabularyPracticeValidation.Submit.class}
+    )
     private String meaning;
 
     /**
      * 词汇id
      */
-    private long vocabularyId;
+    @NotNull(
+            message = "词汇id不能为空",
+            groups = {VocabularyPracticeValidation.Submit.class}
+    )
+    private int vocabularyId;
 }

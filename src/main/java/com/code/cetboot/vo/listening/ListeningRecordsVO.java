@@ -13,12 +13,12 @@ public class ListeningRecordsVO {
     /**
      * 听力练习id
      */
-    private long listeningPracticeId;
+    private Integer listeningPracticeId;
 
     /**
      * 听力记录id
      */
-    private long listeningRecordId;
+    private Integer listeningRecordId;
 
     /**
      * 记录时间
@@ -28,17 +28,17 @@ public class ListeningRecordsVO {
     /**
      * 得分
      */
-    private Long score;
+    private Integer score;
 
     /**
      * 所属用户id
      */
-    private Long userId;
+    private Integer userId;
 
     /**
      * 题目数量
      */
-    private Long exerciseCount;
+    private Integer exerciseCount;
 
     /**
      * 听力练习标题

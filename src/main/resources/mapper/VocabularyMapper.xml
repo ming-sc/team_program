@@ -13,4 +13,10 @@
     <sql id="Base_Column_List">
         vocabulary_id,word,meaning
     </sql>
+    <select id="selectBatchRandom" resultType="com.code.cetboot.entity.Vocabulary">
+        SELECT  *
+        FROM `vocabulary`
+        ORDER BY RAND()
+        LIMIT #{count}
+    </select>
 </mapper>
