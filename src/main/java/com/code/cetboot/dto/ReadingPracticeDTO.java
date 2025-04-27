@@ -16,5 +16,5 @@ public class ReadingPracticeDTO {
     /**
      * 阅读练习id
      */
-    private long readingPracticeId;
+    private Integer readingPracticeId;
 }
