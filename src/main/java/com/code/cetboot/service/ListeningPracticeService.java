@@ -6,6 +6,7 @@ import com.code.cetboot.dto.ListeningPracticeDTO;
 import com.code.cetboot.entity.ListeningPractice;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.code.cetboot.vo.listening.ListeningPracticeVO;
+import com.code.cetboot.vo.listening.ListeningRecordsVO;
 
 /**
 * @author 19735
@@ -45,13 +46,13 @@ public interface ListeningPracticeService extends IService<ListeningPractice> {
      * @param pageDto 分页参数
      * @return Result
      */
-    Result getRecords(Page<ListeningPracticeVO> pageDto);
+    Result getRecords(Page<ListeningRecordsVO> pageDto);
 
     /**
      * 获取听力练习记录
      *
-     * @param listeningPracticeId 听力练习题ID
+     * @param listeningRecordId 听力练习记录ID
      * @return Result
      */
-    Result getRecord(Integer listeningPracticeId);
+    Result getRecord(Integer listeningRecordId);
 }

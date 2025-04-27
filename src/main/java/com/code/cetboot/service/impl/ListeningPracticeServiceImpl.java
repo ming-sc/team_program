@@ -1,6 +1,7 @@
 package com.code.cetboot.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.code.cetboot.bean.PageResult;
@@ -19,6 +20,8 @@ import com.code.cetboot.service.ListeningPracticeService;
 import com.code.cetboot.mapper.ListeningPracticeMapper;
 import com.code.cetboot.vo.ExerciseVO;
 import com.code.cetboot.vo.listening.ListeningPracticeVO;
+import com.code.cetboot.vo.listening.ListeningRecordVO;
+import com.code.cetboot.vo.listening.ListeningRecordsVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +47,7 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
     private ExerciseMapper exerciseMapper;
 
     @Resource
-    private ListeningRecordMapper recordMapper;
+    private ListeningRecordMapper listeningRecordMapper;
 
     @Resource
     private ExerciseRecordService exerciseRecordService;
@@ -57,13 +60,11 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
 
     @Override
     public Result getPractice(Integer listeningPracticeId) {
-        ListeningPractice listeningPractice = baseMapper.selectById(listeningPracticeId);
-        if (listeningPractice == null) {
+        // 获取听力练习题
+        ListeningPracticeVO listeningPracticeVO = getListeningPracticeVO(false, listeningPracticeId);
+        if (listeningPracticeVO == null) {
             return Result.fail("获取听力练习题失败，ID不存在");
         }
-        ListeningPracticeVO listeningPracticeVO = ListeningPracticeVO.from(listeningPractice);
-        List<ExerciseVO> exerciseVOS = exerciseMapper.selectExerciseByListeningPracticeId(false, listeningPracticeId);
-        listeningPracticeVO.setExercises(exerciseVOS);
         return Result.success("获取听力练习题成功", listeningPracticeVO);
     }
 
@@ -130,7 +131,7 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
         listeningRecord.setListeningPracticeId(practiceId);
         listeningRecord.setUserId(userId);
         listeningRecord.setScore(Math.round((float) correctCount.get() / exerciseCount * 100));
-        recordMapper.insert(listeningRecord);
+        listeningRecordMapper.insert(listeningRecord);
 
         exerciseRecords.forEach(exerciseRecord -> {
             exerciseRecord.setRecordId(listeningRecord.getListeningRecordId());
@@ -142,13 +143,60 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
     }
 
     @Override
-    public Result getRecords(Page<ListeningPracticeVO> pageDto) {
-        return null;
+    public Result getRecords(Page<ListeningRecordsVO> pageDto) {
+        Page<ListeningRecordsVO> page = listeningRecordMapper.selectListeningRecordByUserId(pageDto, StpUtil.getLoginIdAsInt());
+        return Result.success("获取听力练习记录成功", PageResult.of(page));
     }
 
     @Override
-    public Result getRecord(Integer listeningPracticeId) {
-        return null;
+    public Result getRecord(Integer listeningRecordId) {
+        int userId = StpUtil.getLoginIdAsInt();
+        // 获取听力练习记录
+        LambdaQueryWrapper<ListeningRecord> queryWrapper = new LambdaQueryWrapper<ListeningRecord>()
+                .eq(ListeningRecord::getListeningRecordId, listeningRecordId)
+                .eq(ListeningRecord::getUserId, userId);
+        ListeningRecord listeningRecord = listeningRecordMapper.selectOne(queryWrapper);
+        if (listeningRecord == null) {
+            return Result.fail("获取听力练习记录失败，听力练习记录ID不存在");
+        }
+
+        // 获取听力练习记录的题目
+        Integer listeningPracticeId = listeningRecord.getListeningPracticeId();
+        ListeningPracticeVO listeningPracticeVO = getListeningPracticeVO(true, listeningPracticeId);
+        if (listeningPracticeVO == null) {
+            return Result.fail("获取听力练习记录失败，听力练习ID不存在");
+        }
+
+        // 获取听力练习记录的答题记录
+        LambdaQueryWrapper<ExerciseRecord> wrapper = new LambdaQueryWrapper<ExerciseRecord>()
+                .eq(ExerciseRecord::getRecordId, listeningRecordId)
+                .eq(ExerciseRecord::getUserId, userId)
+                .eq(ExerciseRecord::getRecordType, RecordType.LISTENING);
+        List<ExerciseRecord> exerciseRecords = exerciseRecordService.list(wrapper);
+        if (exerciseRecords.isEmpty()) {
+            return Result.fail("获取听力练习记录失败，答题记录不存在");
+        }
+
+        // 组合成返回对象
+        ListeningRecordVO listeningRecordVO = new ListeningRecordVO(exerciseRecords, listeningPracticeVO, listeningRecord);
+        return Result.success("获取听力练习记录成功", listeningRecordVO);
+    }
+
+    /**
+     * 获取听力练习题目
+     * @param needAnswer 是否需要答案
+     * @param listeningPracticeId 听力练习题ID
+     * @return ListeningPracticeVO
+     */
+    private ListeningPracticeVO getListeningPracticeVO(boolean needAnswer, Integer listeningPracticeId) {
+        ListeningPractice listeningPractice = baseMapper.selectById(listeningPracticeId);
+        if (listeningPractice == null) {
+            return null;
+        }
+        ListeningPracticeVO listeningPracticeVO = ListeningPracticeVO.from(listeningPractice);
+        List<ExerciseVO> exerciseVOS = exerciseMapper.selectExerciseByListeningPracticeId(needAnswer, listeningPracticeId);
+        listeningPracticeVO.setExercises(exerciseVOS);
+        return listeningPracticeVO;
     }
 }
 

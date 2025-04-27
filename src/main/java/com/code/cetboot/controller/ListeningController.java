@@ -8,6 +8,7 @@ import com.code.cetboot.entity.ListeningPractice;
 import com.code.cetboot.service.ListeningPracticeService;
 import com.code.cetboot.validation.ListeningPracticeValidation;
 import com.code.cetboot.vo.listening.ListeningPracticeVO;
+import com.code.cetboot.vo.listening.ListeningRecordsVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,16 +50,18 @@ public class ListeningController {
     }
 
     @GetMapping("/getRecords")
+    @SaCheckLogin
     public Result getRecords(
-            Page<ListeningPracticeVO> pageDto
+            Page<ListeningRecordsVO> pageDto
     ) {
         return listeningService.getRecords(pageDto);
     }
 
     @GetMapping("/getRecord")
+    @SaCheckLogin
     public Result getRecord(
-            @RequestParam Integer listeningPracticeId
+            @RequestParam Integer listeningRecordId
     ) {
-        return listeningService.getRecord(listeningPracticeId);
+        return listeningService.getRecord(listeningRecordId);
     }
 }
