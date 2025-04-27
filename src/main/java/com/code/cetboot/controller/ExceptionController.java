@@ -7,6 +7,7 @@ import com.code.cetboot.bean.Result;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -97,5 +98,11 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result methodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         return Result.fail("参数转换错误");
+    }
+
+    @ExceptionHandler({BindException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result bindExceptionHandler(BindException e) {
+        return Result.fail("请求参数不完整或有误");
     }
 }

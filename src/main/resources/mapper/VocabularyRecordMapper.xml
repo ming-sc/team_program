@@ -16,4 +16,12 @@
         vocabulary_record_id,user_id,vocabulary_id,
         is_correct,record_time
     </sql>
+    <select id="selectByUserIdAndPage" resultType="com.code.cetboot.vo.vocabulary.VocabularyRecordsVO">
+        SELECT v.vocabulary_id, v.word, v.meaning,
+               vr.is_correct, vr.record_time,vr.vocabulary_record_id,
+               vr.user_id
+        FROM vocabulary_record vr
+        LEFT JOIN vocabulary v ON v.vocabulary_id = vr.vocabulary_id
+        WHERE vr.user_id = #{userId}
+    </select>
 </mapper>

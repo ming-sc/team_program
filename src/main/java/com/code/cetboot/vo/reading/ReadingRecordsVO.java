@@ -14,12 +14,12 @@ public class ReadingRecordsVO {
     /**
      * 阅读练习id
      */
-    private long readingPracticeId;
+    private Integer readingPracticeId;
 
     /**
      * 阅读练习记录id
      */
-    private long readingRecordId;
+    private Integer readingRecordId;
 
     /**
      * 记录时间
@@ -29,17 +29,17 @@ public class ReadingRecordsVO {
     /**
      * 得分
      */
-    private Long score;
+    private Integer score;
 
     /**
      * 所属用户id
      */
-    private Long userId;
+    private Integer userId;
 
     /**
      * 题目数量
      */
-    private Long exerciseCount;
+    private Integer exerciseCount;
 
     /**
      * 阅读理解标题

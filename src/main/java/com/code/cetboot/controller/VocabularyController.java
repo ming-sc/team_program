@@ -7,11 +7,11 @@ import com.code.cetboot.dto.VocabularyPracticeDTO;
 import com.code.cetboot.service.VocabularyService;
 import com.code.cetboot.validation.VocabularyPracticeValidation;
 import com.code.cetboot.vo.vocabulary.VocabularyRecordsVO;
+import org.slf4j.Logger;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -25,6 +25,9 @@ public class VocabularyController {
     @Resource
     private VocabularyService vocabularyService;
 
+    @Resource
+    private Logger logger;
+
     @GetMapping("/getPractices")
     @SaCheckLogin
     public Result getPractices(
@@ -34,14 +37,19 @@ public class VocabularyController {
     }
 
     @PostMapping("submit")
+    @SaCheckLogin
     public Result submit(
             @Validated(VocabularyPracticeValidation.Submit.class)
             @RequestBody List<VocabularyPracticeDTO> vocabularyPracticeList
     ) {
+        if (vocabularyPracticeList.isEmpty()) {
+            return Result.fail("数据不能为空");
+        }
         return vocabularyService.submit(vocabularyPracticeList);
     }
 
     @GetMapping("/getRecords")
+    @SaCheckLogin
     public Result getRecords(
             Page<VocabularyRecordsVO> pageDto
     ) {

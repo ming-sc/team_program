@@ -19,7 +19,7 @@ public class VocabularyRecordsVO {
     /**
      * 词汇id
      */
-    private long vocabularyId;
+    private Integer vocabularyId;
 
     /**
      * 词汇
@@ -29,7 +29,7 @@ public class VocabularyRecordsVO {
     /**
      * 是否正确 0 => 错误 1 => 正确
      */
-    private Long isCorrect;
+    private Integer isCorrect;
 
     /**
      * 记录时间
@@ -39,10 +39,10 @@ public class VocabularyRecordsVO {
     /**
      * 所属用户id
      */
-    private Long userId;
+    private Integer userId;
 
     /**
      * 词汇学习记录id
      */
-    private long vocabularyRecordId;
+    private Integer vocabularyRecordId;
 }

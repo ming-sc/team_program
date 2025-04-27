@@ -15,7 +15,7 @@ public class ExerciseVO {
     /**
      * 正确答案选项id, 除获取练习记录外都不返回此字段!
      */
-    private Long answerSelectionId;
+    private Integer answerSelectionId;
 
     /**
      * 题干
@@ -25,6 +25,6 @@ public class ExerciseVO {
     /**
      * 题目id
      */
-    private long exerciseId;
+    private Integer exerciseId;
     private List<ExerciseSelection> selections;
 }

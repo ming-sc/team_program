@@ -20,14 +20,14 @@ public class ListeningPracticeVO {
     /**
      * 题目数量
      */
-    private Long exerciseCount;
+    private Integer exerciseCount;
 
     private List<ExerciseVO> exercises;
 
     /**
      * 听力练习id
      */
-    private long listeningPracticeId;
+    private Integer listeningPracticeId;
 
     /**
      * 听力练习标题

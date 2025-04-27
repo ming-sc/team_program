@@ -28,5 +28,5 @@ public class VocabularyPracticeDTO {
             message = "词汇id不能为空",
             groups = {VocabularyPracticeValidation.Submit.class}
     )
-    private long vocabularyId;
+    private int vocabularyId;
 }

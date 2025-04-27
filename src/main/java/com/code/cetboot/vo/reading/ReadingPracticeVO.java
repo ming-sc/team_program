@@ -20,14 +20,14 @@ public class ReadingPracticeVO {
     /**
      * 题目数量
      */
-    private Long exerciseCount;
+    private Integer exerciseCount;
 
     private List<ExerciseVO> exercises;
 
     /**
      * 阅读理解id
      */
-    private long readingPracticeId;
+    private Integer readingPracticeId;
 
     /**
      * 阅读理解标题

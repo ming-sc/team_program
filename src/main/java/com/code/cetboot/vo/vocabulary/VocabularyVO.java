@@ -14,7 +14,7 @@ public class VocabularyVO {
     /**
      * 词汇id
      */
-    private long vocabularyId;
+    private Integer vocabularyId;
 
     /**
      * 词汇选项
