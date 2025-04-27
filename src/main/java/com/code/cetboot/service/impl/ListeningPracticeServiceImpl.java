@@ -6,10 +6,15 @@ import com.code.cetboot.bean.PageResult;
 import com.code.cetboot.bean.Result;
 import com.code.cetboot.dto.ListeningPracticeDTO;
 import com.code.cetboot.entity.ListeningPractice;
+import com.code.cetboot.mapper.ExerciseMapper;
 import com.code.cetboot.service.ListeningPracticeService;
 import com.code.cetboot.mapper.ListeningPracticeMapper;
+import com.code.cetboot.vo.ExerciseVO;
 import com.code.cetboot.vo.listening.ListeningPracticeVO;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
 * @author 19735
@@ -20,6 +25,9 @@ import org.springframework.stereotype.Service;
 public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeMapper, ListeningPractice>
     implements ListeningPracticeService{
 
+    @Resource
+    private ExerciseMapper exerciseMapper;
+
     @Override
     public Result getPractices(Page<ListeningPractice> pageDto, String keyword) {
         Page<ListeningPractice> page = baseMapper.selectListeningPracticeByKeyword(pageDto, keyword);
@@ -28,7 +36,14 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
 
     @Override
     public Result getPractice(Integer listeningPracticeId) {
-        return null;
+        ListeningPractice listeningPractice = baseMapper.selectById(listeningPracticeId);
+        if (listeningPractice == null) {
+            return Result.fail("获取听力练习题失败，ID不存在");
+        }
+        ListeningPracticeVO listeningPracticeVO = ListeningPracticeVO.from(listeningPractice);
+        List<ExerciseVO> exerciseVOS = exerciseMapper.selectExerciseByListeningPracticeId(false, listeningPracticeId);
+        listeningPracticeVO.setExercises(exerciseVOS);
+        return Result.success("获取听力练习题成功", listeningPracticeVO);
     }
 
     @Override

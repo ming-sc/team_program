@@ -2,7 +2,11 @@ package com.code.cetboot.mapper;
 
 import com.code.cetboot.entity.Exercise;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.code.cetboot.vo.ExerciseVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 19735
@@ -13,6 +17,13 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ExerciseMapper extends BaseMapper<Exercise> {
 
+    /**
+     * 根据听力练习题 ID 查询对应的练习题
+     *
+     * @param listeningPracticeId 听力练习题 ID
+     * @return 练习题列表
+     */
+    List<ExerciseVO> selectExerciseByListeningPracticeId(@Param("needAnswer") boolean needAnswer, @Param("listeningPracticeId") Integer listeningPracticeId);
 }
 
 
