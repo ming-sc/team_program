@@ -2,6 +2,7 @@ package com.code.cetboot.dto;
 
 import com.code.cetboot.validation.ListeningPracticeValidation;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
  * @create : 2025/4/26
  */
 @Data
+@EqualsAndHashCode(of = {"exerciseId"})
 public class ExerciseDTO {
     /**
      * 选择题id

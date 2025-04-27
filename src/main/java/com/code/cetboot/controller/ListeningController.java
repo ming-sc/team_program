@@ -1,5 +1,6 @@
 package com.code.cetboot.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.code.cetboot.bean.Result;
 import com.code.cetboot.dto.ListeningPracticeDTO;
@@ -39,6 +40,7 @@ public class ListeningController {
     }
 
     @PostMapping("/submit")
+    @SaCheckLogin
     public Result submit(
             @Validated(ListeningPracticeValidation.Submit.class)
             @RequestBody ListeningPracticeDTO listeningPracticeDTO

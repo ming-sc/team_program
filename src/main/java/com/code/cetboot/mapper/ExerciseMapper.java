@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.code.cetboot.vo.ExerciseVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -24,6 +25,19 @@ public interface ExerciseMapper extends BaseMapper<Exercise> {
      * @return 练习题列表
      */
     List<ExerciseVO> selectExerciseByListeningPracticeId(@Param("needAnswer") boolean needAnswer, @Param("listeningPracticeId") Integer listeningPracticeId);
+
+
+    /**
+     * 根据听力练习题 ID 查询对应的练习题
+     *
+     * @param listeningPracticeId 听力练习题 ID
+     * @return 练习题列表
+     */
+    @Select("SELECT *" +
+            "FROM listening_to_exercise lte " +
+            "LEFT JOIN exercise e ON lte.exercise_id = e.exercise_id " +
+            "WHERE lte.listening_practice_id = #{listeningPracticeId}")
+    List<Exercise> selectExerciseByListeningPracticeId(@Param("listeningPracticeId") Integer listeningPracticeId);
 }
 
 

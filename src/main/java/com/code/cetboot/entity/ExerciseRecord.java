@@ -18,7 +18,7 @@ public class ExerciseRecord implements Serializable {
     /**
      * 做题记录id
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer exerciseRecordId;
 
     /**
