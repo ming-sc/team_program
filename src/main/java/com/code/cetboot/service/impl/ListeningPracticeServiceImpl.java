@@ -1,10 +1,38 @@
 package com.code.cetboot.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.code.cetboot.bean.PageResult;
+import com.code.cetboot.bean.Result;
+import com.code.cetboot.constant.RecordType;
+import com.code.cetboot.dto.ExerciseDTO;
+import com.code.cetboot.dto.ListeningPracticeDTO;
+import com.code.cetboot.entity.ExerciseRecord;
 import com.code.cetboot.entity.ListeningPractice;
+import com.code.cetboot.entity.ListeningRecord;
+import com.code.cetboot.exception.ServiceException;
+import com.code.cetboot.mapper.ExerciseMapper;
+import com.code.cetboot.mapper.ListeningRecordMapper;
+import com.code.cetboot.service.ExerciseRecordService;
 import com.code.cetboot.service.ListeningPracticeService;
 import com.code.cetboot.mapper.ListeningPracticeMapper;
+import com.code.cetboot.vo.ExerciseVO;
+import com.code.cetboot.vo.listening.ListeningPracticeVO;
+import com.code.cetboot.vo.listening.ListeningRecordVO;
+import com.code.cetboot.vo.listening.ListeningRecordsVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 
 /**
 * @author 19735
@@ -15,6 +43,161 @@ import org.springframework.stereotype.Service;
 public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeMapper, ListeningPractice>
     implements ListeningPracticeService{
 
+    @Resource
+    private ExerciseMapper exerciseMapper;
+
+    @Resource
+    private ListeningRecordMapper listeningRecordMapper;
+
+    @Resource
+    private ExerciseRecordService exerciseRecordService;
+
+    @Override
+    public Result getPractices(Page<ListeningPractice> pageDto, String keyword) {
+        Page<ListeningPractice> page = baseMapper.selectListeningPracticeByKeyword(pageDto, keyword);
+        return Result.success("获取听力练习题成功", PageResult.of(page));
+    }
+
+    @Override
+    public Result getPractice(Integer listeningPracticeId) {
+        // 获取听力练习题
+        ListeningPracticeVO listeningPracticeVO = getListeningPracticeVO(false, listeningPracticeId);
+        if (listeningPracticeVO == null) {
+            return Result.fail("获取听力练习题失败，ID不存在");
+        }
+        return Result.success("获取听力练习题成功", listeningPracticeVO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result submit(ListeningPracticeDTO listeningPracticeDTO) {
+        Integer practiceId = listeningPracticeDTO.getListeningPracticeId();
+        ListeningPractice listeningPractice = baseMapper.selectById(practiceId);
+        if (listeningPractice == null) {
+            return Result.fail("提交听力练习题失败，ID不存在");
+        }
+
+        // 检查题目数量
+        Integer exerciseCount = listeningPractice.getExerciseCount();
+        List<@Valid ExerciseDTO> exercises = listeningPracticeDTO.getExercises().stream()
+                .distinct()
+                .collect(Collectors.toList());
+        if (exercises.size() != exerciseCount) {
+            return Result.fail("提交听力练习题失败，题目数量不匹配");
+        }
+
+        List<ExerciseVO> answerList = exerciseMapper.selectExerciseByListeningPracticeId(true, practiceId);
+        // 转为 HashMap
+        Map<Integer, ExerciseVO> answerMap = answerList.stream()
+                .collect(Collectors.toMap(ExerciseVO::getExerciseId, v -> v));
+        int userId = StpUtil.getLoginIdAsInt();
+        AtomicInteger correctCount = new AtomicInteger();
+        List<ExerciseRecord> exerciseRecords = exercises.stream()
+                .map(exerciseDTO -> {
+                    Integer exerciseId = exerciseDTO.getExerciseId();
+                    Integer selectionId = exerciseDTO.getSelectionId();
+                    ExerciseVO exerciseVO = answerMap.get(exerciseId);
+                    if (exerciseVO == null) {
+                        return null; // 题目不存在
+                    }
+
+                    // 检查选项是否存在
+                    exerciseVO.getSelections().stream()
+                            .filter(selection -> selection.getExerciseSelectionId().equals(selectionId))
+                            .findFirst()
+                            .orElseThrow(() -> new ServiceException("提交听力练习题失败，选项不存在"));
+
+                    // 创建练习记录
+                    ExerciseRecord exerciseRecord = new ExerciseRecord();
+                    exerciseRecord.setExerciseId(exerciseId);
+                    exerciseRecord.setExerciseSelectionId(selectionId);
+                    exerciseRecord.setUserId(userId);
+                    if (exerciseVO.getAnswerSelectionId().equals(selectionId)) {
+                        correctCount.getAndIncrement();
+                        exerciseRecord.setIsCorrect(1);
+                    } else {
+                        exerciseRecord.setIsCorrect(0);
+                    }
+                    exerciseRecord.setRecordType(RecordType.LISTENING);
+                    return exerciseRecord;
+                }).filter(Objects::nonNull).collect(Collectors.toList());
+
+        if (exerciseRecords.size() != exerciseCount) {
+            return Result.fail("提交听力练习题失败，题目数量不匹配");
+        }
+
+        // 插入听力练习记录
+        ListeningRecord listeningRecord = new ListeningRecord();
+        listeningRecord.setListeningPracticeId(practiceId);
+        listeningRecord.setUserId(userId);
+        listeningRecord.setScore(Math.round((float) correctCount.get() / exerciseCount * 100));
+        listeningRecordMapper.insert(listeningRecord);
+
+        exerciseRecords.forEach(exerciseRecord -> {
+            exerciseRecord.setRecordId(listeningRecord.getListeningRecordId());
+        });
+        // 批量插入
+        exerciseRecordService.saveBatch(exerciseRecords);
+
+        return Result.success("提交听力练习题成功", listeningRecord);
+    }
+
+    @Override
+    public Result getRecords(Page<ListeningRecordsVO> pageDto) {
+        Page<ListeningRecordsVO> page = listeningRecordMapper.selectListeningRecordByUserId(pageDto, StpUtil.getLoginIdAsInt());
+        return Result.success("获取听力练习记录成功", PageResult.of(page));
+    }
+
+    @Override
+    public Result getRecord(Integer listeningRecordId) {
+        int userId = StpUtil.getLoginIdAsInt();
+        // 获取听力练习记录
+        LambdaQueryWrapper<ListeningRecord> queryWrapper = new LambdaQueryWrapper<ListeningRecord>()
+                .eq(ListeningRecord::getListeningRecordId, listeningRecordId)
+                .eq(ListeningRecord::getUserId, userId);
+        ListeningRecord listeningRecord = listeningRecordMapper.selectOne(queryWrapper);
+        if (listeningRecord == null) {
+            return Result.fail("获取听力练习记录失败，听力练习记录ID不存在");
+        }
+
+        // 获取听力练习记录的题目
+        Integer listeningPracticeId = listeningRecord.getListeningPracticeId();
+        ListeningPracticeVO listeningPracticeVO = getListeningPracticeVO(true, listeningPracticeId);
+        if (listeningPracticeVO == null) {
+            return Result.fail("获取听力练习记录失败，听力练习ID不存在");
+        }
+
+        // 获取听力练习记录的答题记录
+        LambdaQueryWrapper<ExerciseRecord> wrapper = new LambdaQueryWrapper<ExerciseRecord>()
+                .eq(ExerciseRecord::getRecordId, listeningRecordId)
+                .eq(ExerciseRecord::getUserId, userId)
+                .eq(ExerciseRecord::getRecordType, RecordType.LISTENING);
+        List<ExerciseRecord> exerciseRecords = exerciseRecordService.list(wrapper);
+        if (exerciseRecords.isEmpty()) {
+            return Result.fail("获取听力练习记录失败，答题记录不存在");
+        }
+
+        // 组合成返回对象
+        ListeningRecordVO listeningRecordVO = new ListeningRecordVO(exerciseRecords, listeningPracticeVO, listeningRecord);
+        return Result.success("获取听力练习记录成功", listeningRecordVO);
+    }
+
+    /**
+     * 获取听力练习题目
+     * @param needAnswer 是否需要答案
+     * @param listeningPracticeId 听力练习题ID
+     * @return ListeningPracticeVO
+     */
+    private ListeningPracticeVO getListeningPracticeVO(boolean needAnswer, Integer listeningPracticeId) {
+        ListeningPractice listeningPractice = baseMapper.selectById(listeningPracticeId);
+        if (listeningPractice == null) {
+            return null;
+        }
+        ListeningPracticeVO listeningPracticeVO = ListeningPracticeVO.from(listeningPractice);
+        List<ExerciseVO> exerciseVOS = exerciseMapper.selectExerciseByListeningPracticeId(needAnswer, listeningPracticeId);
+        listeningPracticeVO.setExercises(exerciseVOS);
+        return listeningPracticeVO;
+    }
 }
 
 

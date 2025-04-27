@@ -3,6 +3,7 @@ package com.code.cetboot.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.code.cetboot.bean.PageResult;
 import com.code.cetboot.bean.Result;
 import com.code.cetboot.dto.VocabularyPracticeDTO;
 import com.code.cetboot.entity.Vocabulary;
@@ -116,7 +117,7 @@ public class VocabularyServiceImpl extends ServiceImpl<VocabularyMapper, Vocabul
         // 获取用户的词汇学习记录
         Page<VocabularyRecordsVO> records = vocabularyRecordMapper.selectByUserIdAndPage(pageDto, userId);
         if (records != null) {
-            return Result.success("获取词汇学习记录成功", records);
+            return Result.success("获取词汇学习记录成功", PageResult.of(records));
         }
         return Result.fail("获取词汇学习记录失败");
     }

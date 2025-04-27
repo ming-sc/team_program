@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -18,7 +18,7 @@ public class ExerciseRecord implements Serializable {
     /**
      * 做题记录id
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer exerciseRecordId;
 
     /**
@@ -44,7 +44,7 @@ public class ExerciseRecord implements Serializable {
     /**
      * 记录时间
      */
-    private Date recordTime;
+    private LocalDateTime recordTime;
 
     /**
      * 听力练习/阅读练习id 由记录类型字段决定类型
