@@ -38,6 +38,15 @@ public interface ExerciseMapper extends BaseMapper<Exercise> {
             "LEFT JOIN exercise e ON lte.exercise_id = e.exercise_id " +
             "WHERE lte.listening_practice_id = #{listeningPracticeId}")
     List<Exercise> selectExerciseByListeningPracticeId(@Param("listeningPracticeId") Integer listeningPracticeId);
+
+    /**
+     * 根据阅读练习题 ID 查询对应的练习题
+     * <p>
+     * TODO: 和上面的方法重复度很高，考虑是否需要合并
+     * @param readingPracticeId 阅读练习题 ID
+     * @return 练习题列表
+     */
+    List<ExerciseVO> selectExerciseByReadingPracticeId(@Param("needAnswer") boolean needAnswer, @Param("readingPracticeId") Integer readingPracticeId);
 }
 
 

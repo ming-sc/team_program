@@ -133,8 +133,9 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
         listeningRecord.setScore(Math.round((float) correctCount.get() / exerciseCount * 100));
         listeningRecordMapper.insert(listeningRecord);
 
+        Integer listeningRecordId = listeningRecord.getListeningRecordId();
         exerciseRecords.forEach(exerciseRecord -> {
-            exerciseRecord.setRecordId(listeningRecord.getListeningRecordId());
+            exerciseRecord.setRecordId(listeningRecordId);
         });
         // 批量插入
         exerciseRecordService.saveBatch(exerciseRecords);

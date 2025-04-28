@@ -1,6 +1,7 @@
 package com.code.cetboot.dto;
 
 import com.code.cetboot.validation.ListeningPracticeValidation;
+import com.code.cetboot.validation.ReadingPracticeValidation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,12 +17,22 @@ public class ExerciseDTO {
     /**
      * 选择题id
      */
-    @NotNull(message = "选择题id不能为空", groups = {ListeningPracticeValidation.Submit.class})
+    @NotNull(message = "选择题id不能为空",
+            groups = {
+                ListeningPracticeValidation.Submit.class,
+                ReadingPracticeValidation.Submit.class
+            }
+    )
     private Integer exerciseId;
 
     /**
      * 所选选项id
      */
-    @NotNull(message = "所选选项id不能为空", groups = {ListeningPracticeValidation.Submit.class})
+    @NotNull(message = "所选选项id不能为空",
+            groups = {
+                ListeningPracticeValidation.Submit.class,
+                ReadingPracticeValidation.Submit.class
+            }
+    )
     private Integer selectionId;
 }
