@@ -1,6 +1,7 @@
 package com.code.cetboot.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.code.cetboot.bean.PageResult;
@@ -11,7 +12,6 @@ import com.code.cetboot.dto.ReadingPracticeDTO;
 import com.code.cetboot.entity.ExerciseRecord;
 import com.code.cetboot.entity.ReadingPractice;
 import com.code.cetboot.entity.ReadingRecord;
-import com.code.cetboot.exception.ServiceException;
 import com.code.cetboot.mapper.ExerciseMapper;
 import com.code.cetboot.mapper.ReadingRecordMapper;
 import com.code.cetboot.service.ExerciseRecordService;
@@ -20,6 +20,7 @@ import com.code.cetboot.service.ReadingPracticeService;
 import com.code.cetboot.mapper.ReadingPracticeMapper;
 import com.code.cetboot.vo.ExerciseVO;
 import com.code.cetboot.vo.reading.ReadingPracticeVO;
+import com.code.cetboot.vo.reading.ReadingRecordVO;
 import com.code.cetboot.vo.reading.ReadingRecordsVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,12 +112,41 @@ public class ReadingPracticeServiceImpl extends ServiceImpl<ReadingPracticeMappe
 
     @Override
     public Result getRecords(Page<ReadingRecordsVO> pageDto) {
-        return null;
+        Page<ReadingRecordsVO> recordsVOPage = readingRecordMapper.selectReadingRecordByUserId(pageDto, StpUtil.getLoginIdAsInt());
+        return Result.success("获取阅读记录成功", PageResult.of(recordsVOPage));
     }
 
     @Override
     public Result getRecord(Integer readingRecordId) {
-        return null;
+        int userId = StpUtil.getLoginIdAsInt();
+        // 获取阅读记录
+        LambdaQueryWrapper<ReadingRecord> queryWrapper = new LambdaQueryWrapper<ReadingRecord>()
+                .eq(ReadingRecord::getReadingRecordId, readingRecordId)
+                .eq(ReadingRecord::getUserId, userId);
+        ReadingRecord readingRecord = readingRecordMapper.selectOne(queryWrapper);
+        if (readingRecord == null) {
+            return Result.fail("获取阅读记录失败, 阅读练习记录ID不存在");
+        }
+
+        // 获取阅读练习记录的题目
+        Integer readingPracticeId = readingRecord.getReadingPracticeId();
+        ReadingPracticeVO readingPracticeVO = getReadingPracticeVO(true, readingPracticeId);
+        if (readingPracticeVO == null) {
+            return Result.fail("获取阅读记录失败, 阅读练习ID不存在");
+        }
+
+        // 获取阅读练习记录的答题记录
+        LambdaQueryWrapper<ExerciseRecord> wrapper = new LambdaQueryWrapper<ExerciseRecord>()
+                .eq(ExerciseRecord::getRecordId, readingRecordId)
+                .eq(ExerciseRecord::getUserId, userId)
+                .eq(ExerciseRecord::getRecordType, RecordType.READING);
+        List<ExerciseRecord> exerciseRecords = exerciseRecordService.list(wrapper);
+        if (exerciseRecords == null || exerciseRecords.isEmpty()) {
+            return Result.fail("获取阅读记录失败, 答题记录不存在");
+        }
+        // 组合成返回对象
+        ReadingRecordVO readingRecordVO = new ReadingRecordVO(exerciseRecords, readingPracticeVO, readingRecord);
+        return Result.success("获取阅读记录成功", readingRecordVO);
     }
 
     private ReadingPracticeVO getReadingPracticeVO(boolean needAnswer, Integer readingPracticeId) {

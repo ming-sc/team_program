@@ -1,5 +1,6 @@
 package com.code.cetboot.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.code.cetboot.bean.Result;
 import com.code.cetboot.dto.ReadingPracticeDTO;
@@ -39,6 +40,7 @@ public class ReadingController {
     }
 
     @PostMapping("/submit")
+    @SaCheckLogin
     public Result submit(
             @Validated({ReadingPracticeValidation.Submit.class})
             @RequestBody ReadingPracticeDTO readingPracticeDTO
@@ -47,6 +49,7 @@ public class ReadingController {
     }
 
     @GetMapping("/getRecords")
+    @SaCheckLogin
     public Result getRecords(
             Page<ReadingRecordsVO> pageDto
     ) {
@@ -54,6 +57,7 @@ public class ReadingController {
     }
 
     @GetMapping("/getRecord")
+    @SaCheckLogin
     public Result getRecord(
             @RequestParam Integer readingRecordId
     ) {

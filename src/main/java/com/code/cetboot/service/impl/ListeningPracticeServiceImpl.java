@@ -12,7 +12,6 @@ import com.code.cetboot.dto.ListeningPracticeDTO;
 import com.code.cetboot.entity.ExerciseRecord;
 import com.code.cetboot.entity.ListeningPractice;
 import com.code.cetboot.entity.ListeningRecord;
-import com.code.cetboot.exception.ServiceException;
 import com.code.cetboot.mapper.ExerciseMapper;
 import com.code.cetboot.mapper.ListeningRecordMapper;
 import com.code.cetboot.service.ExerciseRecordService;
@@ -29,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
