@@ -1,10 +1,18 @@
 package com.code.cetboot.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.code.cetboot.bean.PageResult;
+import com.code.cetboot.bean.Result;
 import com.code.cetboot.entity.File;
 import com.code.cetboot.service.FileService;
 import com.code.cetboot.mapper.FileMapper;
+import com.code.cetboot.util.FileUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 /**
 * @author 19735
@@ -15,6 +23,41 @@ import org.springframework.stereotype.Service;
 public class FileServiceImpl extends ServiceImpl<FileMapper, File>
     implements FileService{
 
+    @Value("${file.filePath}")
+    private String filePath;
+
+    @Value("${webPath}")
+    private String webPath;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
+    @Override
+    public Result uploadFile(MultipartFile file, String fileName) throws Exception {
+        java.io.File fileFolder = new java.io.File(filePath);
+        if (!fileFolder.exists()){
+            fileFolder.mkdirs();
+        }
+        String ext = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String name = UUID.randomUUID().toString().replaceAll("-", "") + ext;
+        String fileSavePath = filePath + name;
+        java.io.File toFile = FileUtil.multipartFileToFile(file, fileSavePath);
+        File fileInfo = new File();
+        fileInfo.setName(fileName);
+        fileInfo.setSrc(contextPath + webPath + name);
+        boolean saved = save(fileInfo);
+        if (!saved){
+            toFile.delete();
+            return Result.fail("文件上传失败");
+        }
+        return Result.success("文件上传成功", fileInfo);
+    }
+
+    @Override
+    public Result searchFile(Page<File> pageDto, String keyword) {
+        Page<File> filePage = baseMapper.selectFileByKeyword(pageDto, keyword);
+        return Result.success("获取文件列表成功", PageResult.of(filePage));
+    }
 }
 
 

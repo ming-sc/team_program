@@ -1,7 +1,10 @@
 package com.code.cetboot.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.code.cetboot.bean.Result;
 import com.code.cetboot.entity.File;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
 * @author 19735
@@ -10,4 +13,21 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface FileService extends IService<File> {
 
+    /**
+     * 上传文件
+     *
+     * @param file 文件
+     * @param fileName 文件名
+     * @return 结果
+     */
+    Result uploadFile(MultipartFile file, String fileName) throws Exception;
+
+    /**
+     * 分页查询文件
+     *
+     * @param pageDto 分页参数
+     * @param keyword 关键字
+     * @return 分页结果
+     */
+    Result searchFile(Page<File> pageDto, String keyword);
 }

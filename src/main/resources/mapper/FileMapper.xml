@@ -13,4 +13,14 @@
     <sql id="Base_Column_List">
         file_id,name,src
     </sql>
+
+    <select id="selectFileByKeyword" resultType="com.code.cetboot.entity.File">
+        SELECT *
+        FROM file f
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND f.name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+    </select>
 </mapper>
