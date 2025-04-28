@@ -1,7 +1,13 @@
 package com.code.cetboot.service;
 
+import com.code.cetboot.dto.ExerciseDTO;
 import com.code.cetboot.entity.Exercise;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.code.cetboot.entity.ExerciseRecord;
+import com.code.cetboot.vo.ExerciseVO;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
 * @author 19735
@@ -10,4 +16,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ExerciseService extends IService<Exercise> {
 
+    /**
+     * 批改练习题
+     * @param answerList 答案列表
+     * @param exercises 练习题列表
+     * @param recordType 记录类型
+     * @param correctCount 正确答案数量
+     * @return 练习记录列表
+     */
+    List<ExerciseRecord> checkExercises(List<ExerciseVO> answerList, List<ExerciseDTO> exercises, Integer recordType, AtomicInteger correctCount);
 }

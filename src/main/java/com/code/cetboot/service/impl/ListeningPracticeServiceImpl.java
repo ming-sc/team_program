@@ -12,10 +12,10 @@ import com.code.cetboot.dto.ListeningPracticeDTO;
 import com.code.cetboot.entity.ExerciseRecord;
 import com.code.cetboot.entity.ListeningPractice;
 import com.code.cetboot.entity.ListeningRecord;
-import com.code.cetboot.exception.ServiceException;
 import com.code.cetboot.mapper.ExerciseMapper;
 import com.code.cetboot.mapper.ListeningRecordMapper;
 import com.code.cetboot.service.ExerciseRecordService;
+import com.code.cetboot.service.ExerciseService;
 import com.code.cetboot.service.ListeningPracticeService;
 import com.code.cetboot.mapper.ListeningPracticeMapper;
 import com.code.cetboot.vo.ExerciseVO;
@@ -28,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -51,6 +49,9 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
 
     @Resource
     private ExerciseRecordService exerciseRecordService;
+
+    @Resource
+    private ExerciseService exerciseService;
 
     @Override
     public Result getPractices(Page<ListeningPractice> pageDto, String keyword) {
@@ -87,54 +88,25 @@ public class ListeningPracticeServiceImpl extends ServiceImpl<ListeningPracticeM
         }
 
         List<ExerciseVO> answerList = exerciseMapper.selectExerciseByListeningPracticeId(true, practiceId);
-        // 转为 HashMap
-        Map<Integer, ExerciseVO> answerMap = answerList.stream()
-                .collect(Collectors.toMap(ExerciseVO::getExerciseId, v -> v));
-        int userId = StpUtil.getLoginIdAsInt();
+        // 正确答案数量计数
         AtomicInteger correctCount = new AtomicInteger();
-        List<ExerciseRecord> exerciseRecords = exercises.stream()
-                .map(exerciseDTO -> {
-                    Integer exerciseId = exerciseDTO.getExerciseId();
-                    Integer selectionId = exerciseDTO.getSelectionId();
-                    ExerciseVO exerciseVO = answerMap.get(exerciseId);
-                    if (exerciseVO == null) {
-                        return null; // 题目不存在
-                    }
-
-                    // 检查选项是否存在
-                    exerciseVO.getSelections().stream()
-                            .filter(selection -> selection.getExerciseSelectionId().equals(selectionId))
-                            .findFirst()
-                            .orElseThrow(() -> new ServiceException("提交听力练习题失败，选项不存在"));
-
-                    // 创建练习记录
-                    ExerciseRecord exerciseRecord = new ExerciseRecord();
-                    exerciseRecord.setExerciseId(exerciseId);
-                    exerciseRecord.setExerciseSelectionId(selectionId);
-                    exerciseRecord.setUserId(userId);
-                    if (exerciseVO.getAnswerSelectionId().equals(selectionId)) {
-                        correctCount.getAndIncrement();
-                        exerciseRecord.setIsCorrect(1);
-                    } else {
-                        exerciseRecord.setIsCorrect(0);
-                    }
-                    exerciseRecord.setRecordType(RecordType.LISTENING);
-                    return exerciseRecord;
-                }).filter(Objects::nonNull).collect(Collectors.toList());
+        List<ExerciseRecord> exerciseRecords = exerciseService.checkExercises(answerList, exercises, RecordType.LISTENING, correctCount);
 
         if (exerciseRecords.size() != exerciseCount) {
             return Result.fail("提交听力练习题失败，题目数量不匹配");
         }
 
         // 插入听力练习记录
+        int userId = StpUtil.getLoginIdAsInt();
         ListeningRecord listeningRecord = new ListeningRecord();
         listeningRecord.setListeningPracticeId(practiceId);
         listeningRecord.setUserId(userId);
         listeningRecord.setScore(Math.round((float) correctCount.get() / exerciseCount * 100));
         listeningRecordMapper.insert(listeningRecord);
 
+        Integer listeningRecordId = listeningRecord.getListeningRecordId();
         exerciseRecords.forEach(exerciseRecord -> {
-            exerciseRecord.setRecordId(listeningRecord.getListeningRecordId());
+            exerciseRecord.setRecordId(listeningRecordId);
         });
         // 批量插入
         exerciseRecordService.saveBatch(exerciseRecords);

@@ -41,4 +41,22 @@
         WHERE listening_practice_id = #{listeningPracticeId}
         ORDER BY lte.exercise_id ASC, s.exercise_selection_id ASC
     </select>
+
+    <select id="selectExerciseByReadingPracticeId" resultMap="exerciseVO">
+        -- 如果 needAnswer 为 true，则查询出 answerSelectionId
+        -- 否则不需要查询 answerSelectionId
+        SELECT
+        <if test="needAnswer">
+            *
+        </if>
+        <if test="!needAnswer">
+            rte.*, e.exercise_id, e.content,
+            s.exercise_selection_id, s.selection
+        </if>
+        FROM reading_to_exercise rte
+        LEFT JOIN exercise e ON rte.exercise_id = e.exercise_id
+        LEFT JOIN exercise_selection s ON rte.exercise_id = s.exercise_id
+        WHERE rte.reading_practice_id = #{readingPracticeId}
+        ORDER BY rte.exercise_id ASC, s.exercise_selection_id ASC
+    </select>
 </mapper>

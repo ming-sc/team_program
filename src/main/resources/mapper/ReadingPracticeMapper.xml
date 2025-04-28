@@ -15,4 +15,13 @@
         reading_practice_id,title,content,
         exercise_count
     </sql>
+    <select id="selectReadingPracticeByKeyword" resultType="com.code.cetboot.entity.ReadingPractice">
+        SELECT rp.reading_practice_id, rp.title, rp.exercise_count
+        FROM reading_practice rp
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND rp.title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+    </select>
 </mapper>

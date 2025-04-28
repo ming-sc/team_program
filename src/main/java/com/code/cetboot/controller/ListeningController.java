@@ -7,7 +7,6 @@ import com.code.cetboot.dto.ListeningPracticeDTO;
 import com.code.cetboot.entity.ListeningPractice;
 import com.code.cetboot.service.ListeningPracticeService;
 import com.code.cetboot.validation.ListeningPracticeValidation;
-import com.code.cetboot.vo.listening.ListeningPracticeVO;
 import com.code.cetboot.vo.listening.ListeningRecordsVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
