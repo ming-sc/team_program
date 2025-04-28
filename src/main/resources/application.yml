@@ -50,3 +50,9 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+
+file:
+  filePath: E:\cetboot\file\
+
+# 文件访问地址
+webPath: /file/download/

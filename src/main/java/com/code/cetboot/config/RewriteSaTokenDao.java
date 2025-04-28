@@ -26,7 +26,7 @@ public class RewriteSaTokenDao extends SaTokenDaoRedisJackson {
      * @return Redis的key
      */
     public String getRedisKey(String key) {
-        return keyPrefix + ":" + key;
+        return key.startsWith(keyPrefix) ? key : keyPrefix + ":" + key;
     }
 
     @Override
