@@ -7,20 +7,7 @@ import TabPanel from 'primevue/tabpanel';
 import {Toast} from "primevue";
 </script>
 <template>
-  <header class="header">
-    <div class="header-title">CET-Boot</div>
-    <div style="width: 100%"></div>
-    <Button severity="secondary"
-            class="header-user"
-            @click="$refs.menu.toggle($event)"
-            aria-haspopup="true"
-            aria-controls="overlay_menu"
-    >
-      {{userinfo.userName}}
-      <i class="pi pi-angle-down" />
-    </Button>
-    <Menu ref="menu" id="overlay_menu" :model="userinfo.token ? items : itemsNoLogin" :popup="true" />
-  </header>
+
   <div class="pic">
     <div class="pic-container">
       <div class="pic-text">
@@ -50,7 +37,7 @@ import {Toast} from "primevue";
               >
                 <template #item="slotProps">
                   <div class="exercise-card">
-                    <p>
+                    <p @click="goToReading" :data-id="slotProps.data.readingPracticeId">
                       {{slotProps.data.title}}
                     </p>
                     <div style="height: 100%; display: flex; flex-direction: row">
@@ -203,6 +190,9 @@ export default {
             });
           });
     },
+    goToReading(e) {
+      this.$router.push({ path: `/reading/${e.target.dataset.id}` });
+    },
     getListening() {
       getListeningPractices(1, 10)
           .then(response => {
@@ -287,7 +277,6 @@ router-link:hover {
   background-repeat: no-repeat;
   background-position: center;
   height: 600px;
-  margin-top: 60px;
 }
 
 .pic-text {

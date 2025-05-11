@@ -39,13 +39,11 @@ export default function ({
             resolve(data);
         }).catch((error) => {
             // 如果 token 过期，则跳转到登录页面
-            if (error) {
-                // window.location.href = "/login";
-                // alert("token 无效，请重新登录!");
+            if (error.status === 401) {
                 localStorage.removeItem("token");
                 window.location.href = "/login";
             }
-            reject(error);
+            reject(error.response.data.message);
         });
     });
 }

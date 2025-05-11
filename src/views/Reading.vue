@@ -1,119 +1,161 @@
+<script setup>
+import Tabs from 'primevue/tabs';
+import TabList from 'primevue/tablist';
+import Tab from 'primevue/tab';
+import TabPanels from 'primevue/tabpanels';
+import TabPanel from 'primevue/tabpanel';
+import {Toast} from "primevue";
+</script>
+
 <template>
-  <div class="reading-card">
-    <h1>{{ currentQuestion.text }}</h1>
-    <div class="options">
-      <button
-        v-for="(option, index) in options"
-        :key="index"
-        @click="checkAnswer(option)"
-      >
-        {{ option }}
-      </button>
-    </div>
-    <p v-if="feedback">{{ feedback }}</p>
+  <div style="width: 100%;height: 100%;display: flex; justify-content: center;padding: 20px" v-if="title">
+    <Splitter style="width: 100%;height: 100%">
+      <SplitterPanel style="overflow: scroll;padding: 20px;height: 100%">
+        <Tabs value="0" style="width: 100%;max-width: 1300px" >
+          <TabList>
+            <Tab value="0" style="font-size: x-large;font-weight: bold">{{title}}</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel active value="0">
+              <p style="white-space: pre-wrap; font-size: large;line-height: 25px">
+                {{content}}
+              </p>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </SplitterPanel>
+      <SplitterPanel style="overflow: scroll;padding: 20px">
+        <div :key="exercise.exerciseId" v-for="(exercise, index) in exercises" style="width: 100%; margin-top: 50px">
+          <div>
+            <p>{{exercise.content}}</p>
+            <RadioButtonGroup>
+              <div style="display: flex;flex-direction: row;align-items: center;margin-top: 15px" :key="selection.exerciseSelectionId"  v-for="selection in exercise.selections">
+                <RadioButton v-model="userSelect[index].selectionId" :value="selection.exerciseSelectionId"  />
+                <label style="width: fit-content;margin: 0;margin-left: 10px">{{ selection.selection }}</label>
+              </div>
+            </RadioButtonGroup>
+          </div>
+        </div>
+        <Button @click="submitReadingPractice" style="width: 100%;margin-top: 30px">
+          提交
+        </Button>
+      </SplitterPanel>
+    </Splitter>
+<!--      <Tabs value="0" style="width: 100%;max-width: 1300px" >-->
+<!--        <TabList>-->
+<!--          <Tab value="0" style="font-size: x-large;font-weight: bold">{{title}}</Tab>-->
+<!--        </TabList>-->
+<!--        <TabPanels>-->
+<!--          <TabPanel active value="0">-->
+
+<!--            <p style="white-space: pre-wrap; font-size: large;line-height: 25px">-->
+<!--              {{content}}-->
+<!--            </p>-->
+<!--            <div :key="exercise.exerciseId" v-for="(exercise, index) in exercises" style="width: 100%; margin-top: 50px">-->
+<!--              <div>-->
+<!--                {{userSelect[index].selectionId}}-->
+<!--                <p>{{exercise.content}}</p>-->
+<!--                <RadioButtonGroup>-->
+<!--                  <div style="display: flex;flex-direction: row;align-items: center;margin-top: 15px" :key="selection.exerciseSelectionId"  v-for="selection in exercise.selections">-->
+<!--                    <RadioButton v-model="userSelect[index].selectionId" :value="selection.exerciseSelectionId"  />-->
+<!--                    <label style="width: fit-content;margin: 0;margin-left: 10px">{{ selection.selection }}</label>-->
+<!--                  </div>-->
+<!--                </RadioButtonGroup>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </TabPanel>-->
+<!--        </TabPanels>-->
+<!--      </Tabs>-->
   </div>
+  <div v-else>
+    阅读不存在
+  </div>
+
+  <Toast />
 </template>
 
 <script>
+import {getPractice} from "@/apis/reading";
+import {submit} from "@/apis/reading";
+
 export default {
   name: 'Reading',
   data() {
     return {
-      questions: [
-        {
-          text: '閱讀題目 1：以下哪個是正確的？',
-          correct: '選項 A',
-        },
-        {
-          text: '閱讀題目 2：以下哪個是錯誤的？',
-          correct: '選項 C',
-        },
-        {
-          text: '閱讀題目 3：以下哪個是正確的？',
-          correct: '選項 B',
-        },
+      content: null,
+      value: null,
+      exercises: [
       ],
-      currentIndex: 0,
-      options: [],
-      feedback: '',
+      readingPracticeId: null,
+      title: null,
+      exerciseCount: null,
+      userSelect: [],
     };
   },
-  computed: {
-    currentQuestion() {
-      return this.questions[this.currentIndex];
-    },
-  },
   methods: {
-    generateOptions() {
-      const correctAnswer = this.currentQuestion.correct;
-      const otherOptions = ['選項 A', '選項 B', '選項 C', '選項 D'].filter(
-        (option) => option !== correctAnswer
-      );
-      // 從 otherOptions 中隨機選取 3 個選項
-      const randomOptions = otherOptions.sort(() => Math.random() - 0.5).slice(0, 3);
-      // 合併正確答案和隨機選項，並隨機排序
-      this.options = [correctAnswer, ...randomOptions].sort(() => Math.random() - 0.5);
+    getReading(readingPractiseId) {
+      getPractice(readingPractiseId)
+          .then(response => {
+            this.content = response.data.content;
+            this.exercises = response.data.exercises;
+            this.title = response.data.title;
+            this.exerciseCount = response.data.exerciseCount;
+            this.userSelect = [];
+            for (const exercisesKey in this.exercises) {
+              const exercise = this.exercises[exercisesKey];
+              this.userSelect.push({
+                exerciseId: exercise.exerciseId,
+                selectionId: null,
+              });
+            }
+          })
+          .catch(error => {
+            this.$toast.add({
+              severity: 'error',
+              summary: '获取阅读练习失败',
+              detail: error,
+              life: 3000,
+            });
+          });
     },
-    checkAnswer(selected) {
-      if (selected === this.currentQuestion.correct) {
-        this.feedback = '選擇正確！';
-        setTimeout(() => {
-          this.nextQuestion();
-        }, 1000);
-      } else {
-        this.feedback = '選擇錯誤，請再試一次！';
+    submitReadingPractice() {
+      for (const userSelectKey in this.userSelect) {
+        const exercise = this.userSelect[userSelectKey];
+        if (exercise.selectionId === null) {
+          this.$toast.add({
+            severity: 'error',
+            summary: '请完成所有题目',
+            life: 3000,
+          });
+          return;
+        }
       }
-    },
-    nextQuestion() {
-      if (this.currentIndex < this.questions.length - 1) {
-        this.currentIndex++;
-        this.generateOptions();
-        this.feedback = '';
-      } else {
-        this.feedback = '所有題目已完成！';
+      const data = {
+        readingPracticeId: this.readingPracticeId,
+        exercises: this.userSelect
       }
-    },
+
+      submit(data)
+          .then(response => {
+            console.log(response);
+            this.$router.push({ path: '/' });
+          })
+          .catch(error => {
+            this.$toast.add({
+              severity: 'error',
+              summary: '提交失败',
+              detail: error,
+              life: 3000,
+            });
+          });
+    }
   },
   mounted() {
-    this.generateOptions();
+    this.readingPracticeId = this.$route.params.id;
+    this.getReading(this.readingPracticeId);
   },
 };
 </script>
 
 <style scoped>
-.reading-card {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-h1 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-}
-
-.options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-p {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: green;
-}
 </style>
