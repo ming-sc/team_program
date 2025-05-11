@@ -1,15 +1,15 @@
 import request from "@/apis/request";
 
-export function getPractices(current, size, keyword) {
+export function getPractices(current, size, keyword = "") {
     return request({
         url: "/reading/getPractices",
         method: "get",
-        data: {
+        params: {
             current: current,
             size: size,
-            // 如果 keyword 不存在，则不传递该参数
-            ...(keyword ? { keyword: keyword } : {})
-        }
+            keyword: keyword
+        },
+        isLogin: true
     });
 }
 
@@ -17,7 +17,7 @@ export function getPractice(readingPracticeId) {
     return request({
         url: "/reading/getPractice",
         method: "get",
-        data: {
+        params: {
             readingPracticeId: readingPracticeId
         }
     });
@@ -38,7 +38,7 @@ export function getRecords(current, size) {
     return request({
         url: "/reading/getRecords",
         method: "get",
-        data: {
+        params: {
             current: current,
             size: size
         }
@@ -49,7 +49,7 @@ export function getRecord(readingRecordId) {
     return request({
         url: "/reading/getRecord",
         method: "get",
-        data: {
+        params: {
             readingRecordId: readingRecordId
         }
     });

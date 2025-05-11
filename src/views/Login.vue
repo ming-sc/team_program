@@ -1,22 +1,23 @@
+<script setup>
+    import {Toast} from "primevue";
+</script>
+
 <template>
-  <div>
-    <h1>登錄頁面</h1>
-    <form @submit.prevent="handleLogin">
-      <div>
-        <label for="username">用戶名：</label>
-        <input type="text" id="username" v-model="username" required />
-      </div>
-      <div>
-        <label for="password">密碼：</label>
-        <input type="password" id="password" v-model="password" required />
-      </div>
-      <button type="submit">登錄</button>
-    </form>
+  <div class="login-container">
+    <h1>登录</h1>
+    <div class="from-container">
+      <InputText style="width: 100%;max-width: 300px;margin-top: 10px;" v-model="username" placeholder="用户名" />
+      <InputText style="width: 100%;max-width: 300px;margin-top: 5px;" v-model="password" placeholder="密码" type="password" />
+      <Button style="width: 100%;max-width: 300px;margin-top: 5px;" @click="handleLogin">
+        登录
+      </Button>
+    </div>
   </div>
+  <Toast style="font-family: 微软雅黑,serif" />
 </template>
 
 <script>
-import store from '../store';
+import {login} from "@/apis/user";
 
 export default {
   name: 'Login',
@@ -28,37 +29,53 @@ export default {
   },
   methods: {
     handleLogin() {
-      // 這裡可以添加登錄邏輯
-      store.mutations.login(this.username);
-      this.$router.push('/vocabulary');
+      // 使用 apis/user.js 里的登录接口
+      login(this.username, this.password)
+          .then(data => {
+            // 处理登录成功的情况
+            console.log(data);
+            this.$toast.add({
+              severity: 'success',
+              summary: '登录成功',
+              detail: '欢迎回来！',
+              life: 3000,
+            });
+            localStorage.setItem('token', data.data.token);
+            localStorage.setItem('userInfo', JSON.stringify(data.data));
+            this.$router.push({ path:"/" });
+          })
+          .catch(error => {
+              // 处理登录失败的情况
+              this.$toast.add({
+                severity: 'error',
+                summary: '登录失败',
+                detail: error,
+                life: 3000,
+              });
+          });
     },
+  },
+  mounted() {
+    // 检查是否已经登录
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.$router.push({ path: '/'});
+    }
   },
 };
 </script>
 
 <style scoped>
-form {
-  max-width: 300px;
-  margin: 0 auto;
-  text-align: left;
-}
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-input {
+.login-container {
+  height: 100%;
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
 }
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #0056b3;
+
+.from-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 </style>

@@ -19,19 +19,18 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'Vocabulary',
   data() {
     return {
-      // 詞彙數據，包含英文單詞和正確的中文翻譯
-      words: [], // 從後端獲取的詞彙數據
-      // 當前詞彙的索引
+      words: [
+        { word: 'apple', correct: '蘋果' },
+        { word: 'banana', correct: '香蕉' },
+        { word: 'cat', correct: '貓' },
+        { word: 'dog', correct: '狗' },
+      ],
       currentIndex: 0,
-      // 當前詞彙的選項
       options: [],
-      // 反饋信息
       feedback: '',
     };
   },
@@ -42,54 +41,33 @@ export default {
     },
   },
   methods: {
-    async fetchWords() {
-      try {
-        // 替換為你的後端接口 URL
-        const response = await axios.get('https://your-backend-api.com/words');
-        this.words = response.data;
-        this.generateOptions();
-      } catch (error) {
-        console.error('獲取詞彙失敗：', error);
-      }
-    },
-    // 生成選項的方法
     generateOptions() {
-      // 獲取當前詞彙的正確答案
       const correctAnswer = this.currentWord.correct;
-      // 其他隨機選項
       const otherOptions = ['橘子', '西瓜', '葡萄'];
-      // 將正確答案和其他選項合併，並隨機排序
       this.options = [correctAnswer, ...otherOptions].sort(() => Math.random() - 0.5);
     },
-    // 檢查用戶選擇是否正確
     checkAnswer(selected) {
       if (selected === this.currentWord.correct) {
-        // 如果選擇正確，顯示反饋信息並在 1 秒後進入下一個詞彙
         this.feedback = '選擇正確！';
         setTimeout(() => {
           this.nextWord();
         }, 1000);
       } else {
-        // 如果選擇錯誤，顯示錯誤信息
         this.feedback = '選擇錯誤，請再試一次！';
       }
     },
-    // 切換到下一個詞彙
     nextWord() {
       if (this.currentIndex < this.words.length - 1) {
-        // 如果還有詞彙未完成，切換到下一個詞彙
         this.currentIndex++;
         this.generateOptions();
         this.feedback = '';
       } else {
-        // 如果所有詞彙已完成，顯示完成信息
         this.feedback = '所有詞彙已完成！';
       }
     },
   },
-  // 組件掛載時生成初始選項
   mounted() {
-    this.fetchWords();
+    this.generateOptions();
   },
 };
 </script>
