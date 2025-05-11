@@ -4,7 +4,7 @@ export function getPractices(count) {
     return request({
         url: "/vocabulary/getPractices",
         method: "get",
-        data: {
+        params: {
             count: count
         }
     });
@@ -25,7 +25,7 @@ export function getRecords(current, size) {
     return request({
         url: "/vocabulary/getRecords",
         method: "get",
-        data: {
+        params: {
             current: current,
             size: size
         }

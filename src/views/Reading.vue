@@ -30,8 +30,8 @@ import {Toast} from "primevue";
             <p>{{exercise.content}}</p>
             <RadioButtonGroup>
               <div style="display: flex;flex-direction: row;align-items: center;margin-top: 15px" :key="selection.exerciseSelectionId"  v-for="selection in exercise.selections">
-                <RadioButton v-model="userSelect[index].selectionId" :value="selection.exerciseSelectionId"  />
-                <label style="width: fit-content;margin: 0;margin-left: 10px">{{ selection.selection }}</label>
+                <RadioButton v-model="userSelect[index].selectionId" :value="selection.exerciseSelectionId" :inputId="selection.exerciseSelectionId" />
+                <label style="width: fit-content;margin: 0;margin-left: 10px; cursor: pointer" :for="selection.exerciseSelectionId">{{ selection.selection }}</label>
               </div>
             </RadioButtonGroup>
           </div>

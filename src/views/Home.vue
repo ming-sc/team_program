@@ -36,8 +36,10 @@ import {Toast} from "primevue";
                   :numScroll="3"
               >
                 <template #item="slotProps">
-                  <div class="exercise-card">
-                    <p @click="goToReading" :data-id="slotProps.data.readingPracticeId">
+                  <div @click="goToReading(slotProps.data.readingPracticeId)" class="exercise-card">
+                    <!-- 阅读图标 -->
+                    <i class="pi pi-book icon"></i>
+                    <p>
                       {{slotProps.data.title}}
                     </p>
                     <div style="height: 100%; display: flex; flex-direction: row">
@@ -68,8 +70,10 @@ import {Toast} from "primevue";
                   :numScroll="3"
               >
                 <template #item="slotProps">
-                  <div class="exercise-card">
-                    <p @click="goToListening" :data-id="slotProps.data.listeningPracticeId">
+                  <div @click="goToListening(slotProps.data.listeningPracticeId)" class="exercise-card">
+                    <!-- 听力图标 -->
+                    <i class="pi pi-volume-up icon"></i>
+                    <p>
                       {{slotProps.data.title}}
                     </p>
                     <div style="height: 100%; display: flex; flex-direction: row">
@@ -89,8 +93,21 @@ import {Toast} from "primevue";
           <Tab value="0" style="font-size: x-large;font-weight: bold">词汇练习</Tab>
         </TabList>
         <TabPanels>
-          <TabPanel value="0">
-            <Button style="width: 100%;height: 50px;margin: 10px">进入词汇练习</Button>
+          <TabPanel @click="goToVocabulary" value="0">
+            <div class="exercise-card">
+              <!-- 单词图标 -->
+              <i class="pi pi-file-word icon"></i>
+              <p>
+                词汇练习
+              </p>
+              <div style="height: 100%; display: flex; flex-direction: row">
+                <div style="width: 100%"></div>
+                <div style="display: flex; flex-direction: column; flex-shrink: 0">
+                  <div style="height: 100%"></div>
+                  <Tag severity="success" style="flex-shrink: 0;height: 30px">题数: ∞</Tag>
+                </div>
+              </div>
+            </div>
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -190,8 +207,8 @@ export default {
             });
           });
     },
-    goToReading(e) {
-      this.$router.push({ path: `/reading/${e.target.dataset.id}` });
+    goToReading(id) {
+      this.$router.push({ path: `/reading/${id}` });
     },
     getListening() {
       getListeningPractices(1, 10)
@@ -207,9 +224,12 @@ export default {
             });
           });
     },
-    goToListening(e) {
-      this.$router.push({ path: `/listening/${e.target.dataset.id}` });
-    }
+    goToListening(id) {
+      this.$router.push({ path: `/listening/${id}` });
+    },
+    goToVocabulary() {
+      this.$router.push({ path: '/vocabulary' });
+    },
   },
   mounted() {
     const userInfo = getUserInfo();
@@ -290,6 +310,7 @@ router-link:hover {
   font-size: 40px;
   letter-spacing: 18px;
   font-weight: 600;
+  text-shadow: 0 0 5px #000;
 }
 
 .pic-container {
@@ -314,6 +335,7 @@ router-link:hover {
   font-weight: 1000;
   margin-top: 20px;
   font-style: italic;
+  text-shadow: 0 0 5px #000;
 }
 
 .page-container {
@@ -345,10 +367,13 @@ router-link:hover {
   display:flex;
   flex-direction:column;
   padding: 20px;
+  position: relative;
+  overflow: hidden;
 }
 .exercise-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.3s;
+  cursor: pointer;
 }
 .exercise-card p {
   margin: 0;
@@ -358,5 +383,13 @@ router-link:hover {
 .exercise-card p:hover {
   color: var(--p-primary-color);
   transition: color 0.3s;
+}
+
+.icon {
+  font-size: 50px;
+  color: var(--p-primary-color);
+  opacity: 0.1;
+  position: absolute;
+  transform: translate(40px, 50px) rotate(-30deg) scale(4);
 }
 </style>
