@@ -41,31 +41,6 @@ import {Toast} from "primevue";
         </Button>
       </SplitterPanel>
     </Splitter>
-<!--      <Tabs value="0" style="width: 100%;max-width: 1300px" >-->
-<!--        <TabList>-->
-<!--          <Tab value="0" style="font-size: x-large;font-weight: bold">{{title}}</Tab>-->
-<!--        </TabList>-->
-<!--        <TabPanels>-->
-<!--          <TabPanel active value="0">-->
-
-<!--            <p style="white-space: pre-wrap; font-size: large;line-height: 25px">-->
-<!--              {{content}}-->
-<!--            </p>-->
-<!--            <div :key="exercise.exerciseId" v-for="(exercise, index) in exercises" style="width: 100%; margin-top: 50px">-->
-<!--              <div>-->
-<!--                {{userSelect[index].selectionId}}-->
-<!--                <p>{{exercise.content}}</p>-->
-<!--                <RadioButtonGroup>-->
-<!--                  <div style="display: flex;flex-direction: row;align-items: center;margin-top: 15px" :key="selection.exerciseSelectionId"  v-for="selection in exercise.selections">-->
-<!--                    <RadioButton v-model="userSelect[index].selectionId" :value="selection.exerciseSelectionId"  />-->
-<!--                    <label style="width: fit-content;margin: 0;margin-left: 10px">{{ selection.selection }}</label>-->
-<!--                  </div>-->
-<!--                </RadioButtonGroup>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </TabPanel>-->
-<!--        </TabPanels>-->
-<!--      </Tabs>-->
   </div>
   <div v-else>
     阅读不存在
@@ -83,7 +58,6 @@ export default {
   data() {
     return {
       content: null,
-      value: null,
       exercises: [
       ],
       readingPracticeId: null,

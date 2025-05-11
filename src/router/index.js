@@ -15,7 +15,7 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/vocabulary', component: Vocabulary},
-  { path: '/listening', component: Listening},
+  { path: '/listening/:id', component: Listening},
   { path: '/reading/:id', component: Reading },
   { path: '/statistics', component: Statistics, meta: { requiresAuth: true } },
   { path: '/admin/login', component: AdminLogin },

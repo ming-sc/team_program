@@ -69,7 +69,7 @@ import {Toast} from "primevue";
               >
                 <template #item="slotProps">
                   <div class="exercise-card">
-                    <p>
+                    <p @click="goToListening" :data-id="slotProps.data.listeningPracticeId">
                       {{slotProps.data.title}}
                     </p>
                     <div style="height: 100%; display: flex; flex-direction: row">
@@ -206,6 +206,9 @@ export default {
               life: 3000,
             });
           });
+    },
+    goToListening(e) {
+      this.$router.push({ path: `/listening/${e.target.dataset.id}` });
     }
   },
   mounted() {

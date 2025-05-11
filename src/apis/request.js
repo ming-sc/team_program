@@ -1,6 +1,7 @@
 import axios from "axios";
 // 请求 api 的基础路径
 export const API_BASE_URL = "http://localhost:8080/CETBoot/api";
+export const BASE_URL = "http://localhost:8080";
 
 // 设置请求类型为 form-data
 axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
