@@ -4,11 +4,10 @@ export function search(current, size, keyword) {
     return request({
         url: "/file/search",
         method: "get",
-        data: {
+        params: {
             current: current,
             size: size,
-            // 如果 keyword 不存在，则不传递该参数
-            ...(keyword ? { keyword: keyword } : {})
+            keyword: keyword
         }
     });
 }

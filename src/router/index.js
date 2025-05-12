@@ -12,6 +12,7 @@ import store from '../store';
 import PracticeRecords from '@/views/ParcticeRecords.vue';
 import ReadingRecord from "@/views/ReadingRecord.vue";
 import ListeningRecord from "@/views/ListeningRecord.vue";
+import Search from "@/views/Search.vue";
 
 const routes = [
   { path: '/', component: Home },
@@ -23,6 +24,8 @@ const routes = [
   { path: '/practiceRecords', component: PracticeRecords },
   { path: '/readingRecord/:id', component: ReadingRecord },
   { path: '/listeningRecord/:id', component: ListeningRecord },
+  { path: '/search/:keyword', component: Search, name: 'Search' },
+  { path: '/search', component: Search },
   { path: '/statistics', component: Statistics, meta: { requiresAuth: true } },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/upload', component: AdminUpload, meta: { requiresAdmin: true } },
