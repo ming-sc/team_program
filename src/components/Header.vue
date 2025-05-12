@@ -49,7 +49,9 @@ export default {
                   });
                   localStorage.removeItem('token');
                   localStorage.removeItem('userInfo');
-                  this.$router.push({ path: '/login' });
+                  this.$router.push({ path: '/login' }).then(() => {
+                    window.location.reload();
+                  });
                 })
                 .catch(error => {
                   this.$toast.add({
@@ -67,7 +69,9 @@ export default {
           label: '登录',
           icon: 'pi pi-fw pi-user',
           command: () => {
-            this.$router.push({ path: '/login' });
+            this.$router.push({ path: '/login' }).then(() => {
+              window.location.reload();
+            });
           }
         }
       ]

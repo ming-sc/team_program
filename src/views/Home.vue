@@ -60,6 +60,10 @@ import {Toast} from "primevue";
           </TabPanel>
         </TabPanels>
         <TabList>
+          <div class="view-more" @click="this.$router.push({ path: '/search/' })">
+            <p>查看更多</p>
+            <i class="pi pi-angle-right" />
+          </div>
           <Tab value="0" style="font-size: x-large;font-weight: bold">听力练习</Tab>
         </TabList>
         <TabPanels>
@@ -122,7 +126,6 @@ import {Toast} from "primevue";
 </template>
 
 <script>
-import {getUserInfo} from "@/utils/userInfo";
 import {getPractices as getReadingPractices} from "@/apis/reading";
 import {getPractices as getListeningPractices} from "@/apis/listening";
 
@@ -130,7 +133,6 @@ export default {
   name: 'Home',
   data() {
     return {
-      userinfo: {},
       reading: [
       ],
       listening: [
@@ -177,12 +179,6 @@ export default {
     },
   },
   mounted() {
-    const userInfo = getUserInfo();
-    if (userInfo) {
-      this.userinfo = userInfo;
-    } else {
-      this.userinfo.userName = "未登录";
-    }
     this.getReading();
     this.getListening();
   }

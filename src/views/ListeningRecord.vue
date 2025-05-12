@@ -31,12 +31,16 @@ import {BASE_URL} from "@/apis/request";
           <audio :src="BASE_URL + audio" controls></audio>
           <div :key="exercise.exerciseId" v-for="(exercise, index) in exercises" style="width: 100%; margin-top: 50px">
             <div>
-              <p>{{exercise.content}}</p>
+              <div style="display: flex; flex-direction: row; align-items: center">
+                <Tag
+                    style="margin-right: 10px;"
+                    :severity="userSelect[index].selectionId === exercise.answerSelectionId ? 'success' : 'danger'"
+                >
+                  {{userSelect[index].selectionId === exercise.answerSelectionId ? '正确' : '错误'}}
+                </Tag>
+                <p>{{exercise.content}}</p>
+              </div>
               <RadioButtonGroup>
-<!--                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 15px" :key="selection.exerciseSelectionId"  v-for="selection in exercise.selections">-->
-<!--                  <RadioButton v-model="userSelect[index].selectionId" :value="selection.exerciseSelectionId"  />-->
-<!--                  <label style="width: fit-content;margin: 0;margin-left: 10px">{{ selection.selection }}</label>-->
-<!--                </div>-->
                 <Tag
                     :key="selection.exerciseSelectionId"
                     v-for="selection in exercise.selections"

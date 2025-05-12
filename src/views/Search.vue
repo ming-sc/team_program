@@ -21,65 +21,80 @@ import {Toast} from "primevue";
       </TabList>
       <TabPanels>
         <TabPanel value="0">
-          <div
-              class="exercise-card"
-              v-for="record in result"
-              :key="record.readingPracticeId"
-              @click="goToReading(record.readingPracticeId)"
-          >
-            <!-- 阅读图标 -->
-            <i class="pi pi-book icon"></i>
-            <p>
-              {{record.title}}
-            </p>
-            <div style="height: 100%; display: flex; flex-direction: row">
-              <div style="width: 100%"></div>
-              <div style="display: flex; flex-direction: column; flex-shrink: 0">
-                <div style="height: 100%"></div>
-                <Tag severity="success" style="flex-shrink: 0;height: 30px">题数: {{record.exerciseCount}}</Tag>
+          <div v-if="total > 0">
+            <div
+                class="exercise-card"
+                v-for="record in result"
+                :key="record.readingPracticeId"
+                @click="goToReading(record.readingPracticeId)"
+            >
+              <!-- 阅读图标 -->
+              <i class="pi pi-book icon"></i>
+              <p>
+                {{record.title}}
+              </p>
+              <div style="height: 100%; display: flex; flex-direction: row">
+                <div style="width: 100%"></div>
+                <div style="display: flex; flex-direction: column; flex-shrink: 0">
+                  <div style="height: 100%"></div>
+                  <Tag severity="success" style="flex-shrink: 0;height: 30px">题数: {{record.exerciseCount}}</Tag>
+                </div>
               </div>
             </div>
+          </div>
+          <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+            暂无数据
           </div>
         </TabPanel>
         <TabPanel value="1">
-          <div
-              class="exercise-card"
-              v-for="record in result"
-              :key="record.listeningPracticeId"
-              @click="goToListening(record.listeningPracticeId)"
-          >
-            <!-- 听力图标 -->
-            <i class="pi pi-volume-up icon"></i>
-            <p>
-              {{record.title}}
-            </p>
-            <div style="height: 100%; display: flex; flex-direction: row">
-              <div style="width: 100%"></div>
-              <div style="display: flex; flex-direction: column; flex-shrink: 0">
-                <div style="height: 100%"></div>
-                <Tag severity="success" style="flex-shrink: 0;height: 30px">题数: {{record.exerciseCount}}</Tag>
+          <div v-if="total > 0">
+            <div
+                class="exercise-card"
+                v-for="record in result"
+                :key="record.listeningPracticeId"
+                @click="goToListening(record.listeningPracticeId)"
+            >
+              <!-- 听力图标 -->
+              <i class="pi pi-volume-up icon"></i>
+              <p>
+                {{record.title}}
+              </p>
+              <div style="height: 100%; display: flex; flex-direction: row">
+                <div style="width: 100%"></div>
+                <div style="display: flex; flex-direction: column; flex-shrink: 0">
+                  <div style="height: 100%"></div>
+                  <Tag severity="success" style="flex-shrink: 0;height: 30px">题数: {{record.exerciseCount}}</Tag>
+                </div>
               </div>
             </div>
           </div>
+          <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+            暂无数据
+          </div>
         </TabPanel>
         <TabPanel value="2">
-          <div
-              class="exercise-card"
-              v-for="record in result"
-              :key="record.fileId"
-              @click="goToFile(record.src)"
-          >
-            <!-- 听力图标 -->
-            <i class="pi pi-file icon"></i>
-            <p>
-              {{record.name}}
-            </p>
-            <div style="height: 100%; display: flex; flex-direction: row">
-              <div style="width: 100%"></div>
-              <div style="display: flex; flex-direction: column; flex-shrink: 0">
-                <div style="height: 100%"></div>
+          <div v-if="total > 0">
+            <div
+                class="exercise-card"
+                v-for="record in result"
+                :key="record.fileId"
+                @click="goToFile(record.src)"
+            >
+              <!-- 文件图标 -->
+              <i class="pi pi-file icon"></i>
+              <p>
+                {{record.name}}
+              </p>
+              <div style="height: 100%; display: flex; flex-direction: row">
+                <div style="width: 100%"></div>
+                <div style="display: flex; flex-direction: column; flex-shrink: 0">
+                  <div style="height: 100%"></div>
+                </div>
               </div>
             </div>
+          </div>
+          <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+            暂无数据
           </div>
         </TabPanel>
       </TabPanels>

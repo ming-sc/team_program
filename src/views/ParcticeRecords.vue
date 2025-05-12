@@ -17,7 +17,7 @@ import TabPanel from "primevue/tabpanel";
       </TabList>
       <TabPanels>
         <TabPanel value="0">
-          <div>
+          <div v-if="total > 0">
             <div :key="readingRecord.readingRecordId"
                  v-for="readingRecord in records"
                  class="exercise-card"
@@ -43,9 +43,12 @@ import TabPanel from "primevue/tabpanel";
               </div>
             </div>
           </div>
+          <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+            暂无数据
+          </div>
         </TabPanel>
         <TabPanel value="1">
-          <div>
+          <div v-if="total > 0">
             <div :key="listeningRecord.listeningRecordId"
                  v-for="listeningRecord in records"
                  class="exercise-card"
@@ -71,9 +74,12 @@ import TabPanel from "primevue/tabpanel";
               </div>
             </div>
           </div>
+          <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+            暂无数据
+          </div>
         </TabPanel>
         <TabPanel value="2">
-          <div>
+          <div v-if="total > 0">
             <div :key="vocabularyRecord.vocabularyRecordId"
                  v-for="vocabularyRecord in records"
                  class="exercise-card"
@@ -99,10 +105,13 @@ import TabPanel from "primevue/tabpanel";
               </div>
             </div>
           </div>
+          <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+            暂无数据
+          </div>
         </TabPanel>
       </TabPanels>
       <Paginator
-          v-if="total > 0"
+          v-if="total > pageSize"
           :rows="10"
           :totalRecords="total"
           :rowsPerPageOptions="[10, 20, 30]"
