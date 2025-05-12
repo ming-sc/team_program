@@ -21,7 +21,11 @@ import {Toast} from "primevue";
   <div class="page-container">
     <div class="page">
       <Tabs value="0">
-        <TabList>
+        <TabList style="position: relative">
+          <div class="view-more" @click="this.$router.push({ path: '/search/' })">
+            <p>查看更多</p>
+            <i class="pi pi-angle-right" />
+          </div>
           <Tab value="0" style="font-size: x-large;font-weight: bold">阅读练习</Tab>
         </TabList>
         <TabPanels>
@@ -119,7 +123,6 @@ import {Toast} from "primevue";
 
 <script>
 import {getUserInfo} from "@/utils/userInfo";
-import {logout} from "@/apis/user";
 import {getPractices as getReadingPractices} from "@/apis/reading";
 import {getPractices as getListeningPractices} from "@/apis/listening";
 
@@ -128,67 +131,9 @@ export default {
   data() {
     return {
       userinfo: {},
-      items: [
-        {
-          label: '答题记录',
-          icon: 'pi pi-fw pi-book',
-        },
-        {
-          label: '退出登录',
-          icon: 'pi pi-fw pi-sign-out',
-          command: () => {
-            logout()
-                .then(() => {
-                  this.$toast.add({
-                    severity: 'success',
-                    summary: '退出登录成功',
-                    life: 3000,
-                  });
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('userInfo');
-                  this.$router.push({ path: '/login' });
-                })
-                .catch(error => {
-                  this.$toast.add({
-                    severity: 'error',
-                    summary: '退出登录失败',
-                    detail: error,
-                    life: 3000,
-                  });
-                });
-          }
-        }
-      ],
-      itemsNoLogin: [
-        {
-          label: '登录',
-          icon: 'pi pi-fw pi-user',
-          command: () => {
-            this.$router.push({ path: '/login' });
-          }
-        }
-      ],
       reading: [
-        {
-          "readingPracticeId": 1,
-          "title": "阅读练习1",
-          "content": null,
-          "exerciseCount": 3
-        },
-        {
-          "readingPracticeId": 2,
-          "title": "阅读练习2",
-          "content": null,
-          "exerciseCount": 4
-        }
       ],
       listening: [
-        {
-          "listeningPracticeId": 2,
-          "title": "听力练习2",
-          "audio": "音频链接",
-          "exerciseCount": 3
-        }
       ],
     }
   },
@@ -262,36 +207,6 @@ router-link {
 }
 router-link:hover {
   background-color: #0056b3;
-}
-
-.header-title {
-  align-content: center;
-  font-size: xx-large;
-  font-weight: bold;
-  margin: 15px;
-  color: var(--p-text-color);
-  flex-shrink: 0;
-}
-
-.header {
-  height: 65px;
-  display: flex;
-  flex-direction: row;
-  background-color: var(--p-content-background);
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  top: 0;
-  z-index: 1;
-  width: 100%;
-}
-
-.header-user {
-  align-content: center;
-  color: var(--p-text-color);
-  height: fit-content;
-  flex-shrink: 0;
-  margin-right: 30px;
 }
 
 .pic {
@@ -391,5 +306,22 @@ router-link:hover {
   opacity: 0.1;
   position: absolute;
   transform: translate(40px, 50px) rotate(-30deg) scale(4);
+}
+
+.view-more {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  align-items: center;
+  right: 0px;
+  display: flex;
+  flex-direction: row;
+  user-select: none;
+  cursor: pointer;
+}
+
+.view-more:hover {
+  color: var(--p-primary-color);
+  transition: color 0.3s;
 }
 </style>

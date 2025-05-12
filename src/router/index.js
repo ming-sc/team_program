@@ -9,6 +9,9 @@ import Statistics from '../views/Statistics.vue';
 import AdminUpload from '@/views/AdminUpload.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
 import store from '../store';
+import PracticeRecords from '@/views/ParcticeRecords.vue';
+import ReadingRecord from "@/views/ReadingRecord.vue";
+import ListeningRecord from "@/views/ListeningRecord.vue";
 
 const routes = [
   { path: '/', component: Home },
@@ -17,6 +20,9 @@ const routes = [
   { path: '/vocabulary', component: Vocabulary},
   { path: '/listening/:id', component: Listening},
   { path: '/reading/:id', component: Reading },
+  { path: '/practiceRecords', component: PracticeRecords },
+  { path: '/readingRecord/:id', component: ReadingRecord },
+  { path: '/listeningRecord/:id', component: ListeningRecord },
   { path: '/statistics', component: Statistics, meta: { requiresAuth: true } },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/upload', component: AdminUpload, meta: { requiresAdmin: true } },

@@ -4,7 +4,7 @@
 
 <template>
   <header class="header">
-    <div class="header-title">CET-Boot</div>
+    <div class="header-title" @click="goToHome">CET-Boot</div>
     <div style="width: 100%"></div>
     <Button severity="secondary"
             class="header-user"
@@ -32,6 +32,9 @@ export default {
         {
           label: '答题记录',
           icon: 'pi pi-fw pi-book',
+          command: () => {
+            this.$router.push({ path: '/practiceRecords' });
+          }
         },
         {
           label: '退出登录',
@@ -70,6 +73,11 @@ export default {
       ]
     }
   },
+  methods: {
+    goToHome() {
+      this.$router.push({ path: '/' });
+    }
+  },
   mounted() {
     const userInfo = getUserInfo();
     if (userInfo) {
@@ -89,6 +97,8 @@ export default {
   margin: 15px;
   color: var(--p-text-color);
   flex-shrink: 0;
+  user-select: none;
+  cursor: pointer;
 }
 
 .header {

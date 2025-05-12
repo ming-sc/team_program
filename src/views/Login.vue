@@ -4,7 +4,7 @@
 
 <template>
   <div class="login-container">
-    <h1>登录</h1>
+    <h1 style="text-align: center">登录</h1>
     <div class="from-container">
       <InputText style="width: 100%;max-width: 300px;margin-top: 10px;" v-model="username" placeholder="用户名" />
       <InputText style="width: 100%;max-width: 300px;margin-top: 5px;" v-model="password" placeholder="密码" type="password" />

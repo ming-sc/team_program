@@ -27,7 +27,7 @@ import {BASE_URL} from "@/apis/request";
               </RadioButtonGroup>
             </div>
           </div>
-          <Button style="width: 100%;margin-top: 30px" @click="submitListeningPractice">提交</Button>
+          <Button :disabled="submitLock" style="width: 100%;margin-top: 30px" @click="submitListeningPractice">提交</Button>
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -53,6 +53,7 @@ export default {
       exercises: [],
       listeningPracticeId: null,
       exerciseCount: null,
+      submitLock: false,
     };
   },
   methods: {
@@ -82,6 +83,10 @@ export default {
           });
     },
     submitListeningPractice() {
+      if (this.submitLock) {
+        return;
+      }
+      this.submitLock = true;
       for (const userSelectKey in this.userSelect) {
         const exercise = this.userSelect[userSelectKey];
         if (exercise.selectionId === null) {
@@ -90,6 +95,7 @@ export default {
             summary: '请完成所有题目',
             life: 3000,
           });
+          this.submitLock = false;
           return;
         }
       }
@@ -101,7 +107,7 @@ export default {
       submit(data)
           .then(response => {
             console.log(response);
-            this.$router.push({ path: '/' });
+            this.$router.push({ path: `/listeningRecord/${response.data.listeningRecordId}` });
           })
           .catch(error => {
             this.$toast.add({
@@ -111,7 +117,9 @@ export default {
               life: 3000,
             });
           });
-    }
+
+      this.submitLock = false;
+    },
   },
   mounted() {
     this.listeningPracticeId = this.$route.params.id;

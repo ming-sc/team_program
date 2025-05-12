@@ -7,6 +7,7 @@ import Aura from '@primeuix/themes/aura'
 import ToastService from "primevue/toastservice";
 import 'primeicons/primeicons.css'
 import { definePreset } from '@primeuix/themes';
+import Tooltip from 'primevue/tooltip';
 
 const Noir = definePreset(Aura, {
     semantic: {
@@ -65,4 +66,5 @@ createApp(App)
   .use(ToastService)
   .use(router)
   .use(store)
+  .directive('tooltip', Tooltip)
   .mount('#app');

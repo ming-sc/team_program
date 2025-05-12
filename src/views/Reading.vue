@@ -36,14 +36,15 @@ import {Toast} from "primevue";
             </RadioButtonGroup>
           </div>
         </div>
-        <Button @click="submitReadingPractice" style="width: 100%;margin-top: 30px">
+        <Button :disabled="submitLock" @click="submitReadingPractice" style="width: 100%;margin-top: 30px">
           提交
         </Button>
       </SplitterPanel>
     </Splitter>
   </div>
-  <div v-else>
+  <div class="empty-card" v-else>
     阅读不存在
+    <Button style="margin: 40px" @click="this.$router.push({path: '/'})">返回主页</Button>
   </div>
 
   <Toast />
@@ -64,6 +65,7 @@ export default {
       title: null,
       exerciseCount: null,
       userSelect: [],
+      submitLock: false,
     };
   },
   methods: {
@@ -93,6 +95,10 @@ export default {
           });
     },
     submitReadingPractice() {
+      if (this.submitLock) {
+        return;
+      }
+      this.submitLock = true;
       for (const userSelectKey in this.userSelect) {
         const exercise = this.userSelect[userSelectKey];
         if (exercise.selectionId === null) {
@@ -101,6 +107,7 @@ export default {
             summary: '请完成所有题目',
             life: 3000,
           });
+          this.submitLock = false;
           return;
         }
       }
@@ -112,7 +119,7 @@ export default {
       submit(data)
           .then(response => {
             console.log(response);
-            this.$router.push({ path: '/' });
+            this.$router.push({ path: `/readingRecord/${response.data.readingRecordId}` });
           })
           .catch(error => {
             this.$toast.add({
@@ -122,6 +129,7 @@ export default {
               life: 3000,
             });
           });
+      this.submitLock = false;
     }
   },
   mounted() {
@@ -132,4 +140,16 @@ export default {
 </script>
 
 <style scoped>
+.empty-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: x-large;
+  font-weight: bold;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  color: #999999;
+}
 </style>
