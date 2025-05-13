@@ -62,8 +62,8 @@ import {BASE_URL} from "@/apis/request";
       </TabPanels>
     </Tabs>
   </div>
-  <div v-else>
-    听力不存在
+  <div style="width: 100%;text-align: center;color: #999999;font-size: large;margin-top: 20px" v-else>
+    暂无数据
   </div>
 
   <Toast />

@@ -32,8 +32,9 @@ import {BASE_URL} from "@/apis/request";
       </TabPanels>
     </Tabs>
   </div>
-  <div v-else>
+  <div class="empty-card" v-else>
     听力不存在
+    <Button style="margin: 40px" @click="this.$router.push({path: '/'})">返回主页</Button>
   </div>
 
   <Toast />
@@ -129,4 +130,16 @@ export default {
 </script>
 
 <style scoped>
+.empty-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: x-large;
+  font-weight: bold;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  color: #999999;
+}
 </style>
