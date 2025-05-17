@@ -15,7 +15,7 @@
       {{userinfo.userName}}
       <i class="pi pi-angle-down" />
     </Button>
-    <Menu ref="menu" id="overlay_menu" :model="userinfo.token ? items : itemsNoLogin" :popup="true" />
+    <Menu ref="menu" id="overlay_menu" :model="userinfo.token ? ( userinfo.role ? [...itemAdmin, ...items] : items ) : itemsNoLogin" :popup="true" />
   </header>
 </template>
 
@@ -72,6 +72,15 @@ export default {
             this.$router.push({ path: '/login' }).then(() => {
               window.location.reload();
             });
+          }
+        }
+      ],
+      itemAdmin: [
+        {
+          label: "管理平台",
+          icon: "pi pi-fw pi-wrench",
+          command: () => {
+            this.$router.push({ path: '/manager' });
           }
         }
       ]

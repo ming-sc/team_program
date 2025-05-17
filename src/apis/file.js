@@ -12,13 +12,14 @@ export function search(current, size, keyword) {
     });
 }
 
-export function upload(file, fileName) {
+export function upload(file, fileName, type = 0) {
     return request({
         url: "/file/upload",
         method: "post",
         data: {
             file: file,
-            fileName: fileName
+            fileName: fileName,
+            type: type
         },
         headers: {
             "Content-Type": "multipart/form-data"

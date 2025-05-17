@@ -54,3 +54,18 @@ export function getRecord(listeningRecordId) {
         }
     });
 }
+
+export function add(title, audio, exercises) {
+    return request({
+        url: "/listening/add",
+        method: "post",
+        data: {
+            title: title,
+            audio: audio,
+            exercises: exercises
+        },
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}

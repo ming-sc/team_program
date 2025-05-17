@@ -44,7 +44,10 @@ export default function ({
                 localStorage.removeItem("token");
                 window.location.href = "/login";
             }
-            reject(error.response.data.message);
+            if(error.response) {
+                reject(error.response.data.message);
+            }
+            reject(error);
         });
     });
 }

@@ -54,3 +54,18 @@ export function getRecord(readingRecordId) {
         }
     });
 }
+
+export function add(title, content, exercises) {
+    return request({
+        url: "/reading/add",
+        method: "post",
+        data: {
+            title: title,
+            content: content,
+            exercises: exercises
+        },
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+}

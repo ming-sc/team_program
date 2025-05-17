@@ -31,3 +31,14 @@ export function getRecords(current, size) {
         }
     });
 }
+
+export function add(data) {
+    return request({
+       url: "/vocabulary/add",
+       method: "post",
+       data: data,
+         headers: {
+              "Content-Type": "application/json"
+         }
+    });
+}

@@ -8,11 +8,15 @@ import Reading from '../views/Reading.vue';
 import Statistics from '../views/Statistics.vue';
 import AdminUpload from '@/views/AdminUpload.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
-import store from '../store';
 import PracticeRecords from '@/views/ParcticeRecords.vue';
 import ReadingRecord from "@/views/ReadingRecord.vue";
 import ListeningRecord from "@/views/ListeningRecord.vue";
 import Search from "@/views/Search.vue";
+import Manager from "@/views/Manager.vue";
+import AddReading from "@/views/AddReading.vue";
+import AddListening from "@/views/AddListening.vue";
+import AddVocabulary from "@/views/AddVocabulary.vue";
+import {getUserInfo} from "@/utils/userInfo";
 
 const routes = [
   { path: '/', component: Home },
@@ -26,6 +30,10 @@ const routes = [
   { path: '/listeningRecord/:id', component: ListeningRecord },
   { path: '/search/:keyword', component: Search, name: 'Search' },
   { path: '/search', component: Search },
+  { path: '/manager', component: Manager, meta: {requiresAdmin: true} },
+  { path: '/manager/addReading', component: AddReading, meta: {requiresAdmin: true} },
+  { path: '/manager/addListening', component: AddListening, meta: {requiresAdmin: true} },
+  { path: '/manager/addVocabulary', component: AddVocabulary, meta: {requiresAdmin: true} },
   { path: '/statistics', component: Statistics, meta: { requiresAuth: true } },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/upload', component: AdminUpload, meta: { requiresAdmin: true } },
@@ -37,13 +45,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = store.state.isAuthenticated;
-  const isAdmin = store.state.user && store.state.user.isAdmin; // 假設用戶信息中包含 isAdmin 字段
-
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/login'); // 如果未登錄且路由需要登錄，重定向到登錄頁面
-  } else if (to.meta.requiresAdmin && !isAdmin) {
-    next('/'); // 如果沒有管理員權限，重定向到首頁
+  if (to.meta.requiresAdmin) {
+    const isAdmin = getUserInfo().role === 1 ; // 假設用戶信息中包含 isAdmin 字段
+    if (!isAdmin) {
+      next({ path: '/' });
+    } else {
+      next();
+    }
   } else {
     next();
   }
