@@ -1,22 +1,27 @@
 <template>
   <div id="app">
-    <NavBar />
+<!--    <NavBar />-->
+    <Header></Header>
     <transition name="fade" mode="out-in">
-      <router-view />
+      <div style="padding-top: 65px;height: 100%;box-sizing: border-box">
+        <router-view />
+      </div>
     </transition>
-    <ThemeToggle />
   </div>
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue'
-import ThemeToggle from './components/ThemeToggle.vue'
+// import NavBar from './components/NavBar.vue'
+// import ThemeToggle from './components/ThemeToggle.vue'
+
+import Header from "@/components/Header.vue";
 
 export default {
   name: 'App',
   components: {
-    NavBar,
-    ThemeToggle
+    Header
+    // NavBar,
+    // ThemeToggle
   }
 }
 </script>
@@ -26,6 +31,10 @@ export default {
 body {
   background-color: white;
   color: #2c3e50;
+  height: 100vh;
+  box-sizing: border-box;
+  margin: unset;
+  overflow: scroll;
 }
 
 /* 深色模式 */
@@ -38,8 +47,9 @@ body.dark-mode {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  margin-top: 60px;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: scroll;
 }
 
 h1 {
@@ -55,24 +65,6 @@ form {
 label {
   display: block;
   margin-bottom: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-}
-
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 nav {

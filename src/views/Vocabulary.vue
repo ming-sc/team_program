@@ -1,139 +1,208 @@
+<script setup>
+import {Toast} from "primevue";
+</script>
+
 <template>
-  <div class="vocabulary-card">
-    <!-- 顯示當前詞彙的英文單詞 -->
-    <h1>{{ currentWord.word }}</h1>
-    <!-- 選項按鈕區域 -->
-    <div class="options">
-      <!-- 遍歷選項，生成按鈕 -->
-      <button
-        v-for="(option, index) in options"
-        :key="index"
-        @click="checkAnswer(option)"
-      >
-        {{ option }}
-      </button>
-    </div>
-    <!-- 顯示反饋信息 -->
-    <p v-if="feedback">{{ feedback }}</p>
+  <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center">
+    <Tabs value="0" style="width: 100%;max-width: 1300px" >
+      <TabList>
+        <Tab value="0" style="font-size: x-large;font-weight: bold">词汇练习</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel value="0">
+          <Carousel
+              style="width: 100%; margin-top: 15px;"
+              :value="vocabulary"
+              :numVisible="1"
+              :numScroll="1"
+              :page="page"
+              @update:page="onChange"
+          >
+            <template #item="slotProps">
+              <div class="exercise-card" v-if="slotProps.index < vocabulary.length - 1">
+                <div style="width: 100%; text-align: center; padding: 20px; font-size: 100px">
+                  {{slotProps.data.word}}
+                </div>
+                <div style="display: flex; flex-direction: row;flex-wrap: wrap;width: 400px; justify-content: center;margin-top: 20px">
+                  <div style="display: flex;flex-direction: row;align-items: center;" :key="selection"  v-for="selection in slotProps.data.selections">
+                    <RadioButton v-model="userSelect[slotProps.index].meaning" style="display: none" :value="selection" :inputId="selection" />
+                    <label @click="next" class="radio-button" :class="userSelect[slotProps.index].meaning === selection? 'radio-button-selected' : {} " style="width: 120px;height: 120px; margin: 10px;cursor: pointer" :for="selection">{{ selection }}</label>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="exercise-card end">
+                <div style="width: 100%; text-align: center; padding: 20px; font-size: 100px;">词汇练习已完成！🥳</div>
+                <Button style="width: 400px;margin-top: 100px" @click="submitVocabularyPractice" :disabled="buttonDisable">提交</Button>
+              </div>
+            </template>
+            <template #empty>
+              <div class="exercise-card" style="height: 550px">
+                <div style="width: 100%; text-align: center; padding: 20px; font-size: 100px;">词汇练习为空</div>
+              </div>
+            </template>
+          </Carousel>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   </div>
+
+  <Dialog v-model:visible="visible" modal>
+    <template #container>
+      <div style="padding: 20px">
+        <div style="font-size: large;">
+          还要继续练习吗?
+        </div>
+        <div style="margin-top: 35px">
+          <Button @click="backHome" severity="danger">返回主页</Button>
+          <Button @click="reset" style="margin-left: 5px">继续练习</Button>
+        </div>
+      </div>
+    </template>
+  </Dialog>
+  <Toast />
 </template>
 
 <script>
-import axios from 'axios';
+import Tabs from "primevue/tabs";
+import Tab from "primevue/tab";
+import TabList from "primevue/tablist";
+import TabPanels from "primevue/tabpanels";
+import TabPanel from "primevue/tabpanel";
+import {getPractices, submit} from "@/apis/vocabulary";
 
 export default {
   name: 'Vocabulary',
+  components: {TabPanel, TabPanels, TabList, Tab, Tabs},
   data() {
     return {
-      // 詞彙數據，包含英文單詞和正確的中文翻譯
-      words: [], // 從後端獲取的詞彙數據
-      // 當前詞彙的索引
-      currentIndex: 0,
-      // 當前詞彙的選項
-      options: [],
-      // 反饋信息
-      feedback: '',
+      vocabulary: [
+      ],
+      userSelect: [],
+      buttonDisable: false,
+      visible: false,
+      page: 0,
     };
   },
-  computed: {
-    // 計算屬性，返回當前詞彙
-    currentWord() {
-      return this.words[this.currentIndex];
-    },
-  },
   methods: {
-    async fetchWords() {
-      try {
-        // 替換為你的後端接口 URL
-        const response = await axios.get('https://your-backend-api.com/words');
-        this.words = response.data;
-        this.generateOptions();
-      } catch (error) {
-        console.error('獲取詞彙失敗：', error);
+    getVocabulary(count) {
+      getPractices(count)
+          .then(response => {
+            this.vocabulary = response.data;
+            this.userSelect = [];
+            for (const vocabularyKey in this.vocabulary) {
+              const vocabulary = this.vocabulary[vocabularyKey];
+              this.userSelect.push({
+                vocabularyId: vocabulary.vocabularyId,
+                meaning: null
+              });
+            }
+            this.vocabulary.push({});
+          })
+          .catch(error => {
+            this.$toast.add({
+              severity: 'error',
+              summary: '获取词汇失败',
+              detail: error,
+              life: 3000,
+            });
+          });
+    },
+    submitVocabularyPractice() {
+      if (this.buttonDisable) {
+        return;
+      }
+      this.buttonDisable = true;
+      for (const userSelectKey in this.userSelect) {
+        const exercise = this.userSelect[userSelectKey];
+        if (exercise.meaning === null) {
+          this.$toast.add({
+            severity: 'error',
+            summary: '请完成所有题目',
+            life: 3000,
+          });
+          this.buttonDisable = false;
+          return;
+        }
+      }
+
+      submit(this.userSelect)
+          .then(response => {
+            this.$toast.add({
+              severity: 'success',
+              summary: '提交成功',
+              detail: response.data,
+              life: 3000,
+            });
+            this.visible = true;
+          })
+          .catch(error => {
+            this.$toast.add({
+              severity: 'error',
+              summary: '提交失败',
+              detail: error,
+              life: 3000,
+            });
+          });
+      this.buttonDisable = false;
+    },
+    reset() {
+      this.visible = false;
+      this.getVocabulary(10);
+      this.page = 0;
+    },
+    backHome() {
+      this.$router.push({path: '/'});
+    },
+    pre() {
+      if (this.page > 0) {
+        this.page--;
       }
     },
-    // 生成選項的方法
-    generateOptions() {
-      // 獲取當前詞彙的正確答案
-      const correctAnswer = this.currentWord.correct;
-      // 其他隨機選項
-      const otherOptions = ['橘子', '西瓜', '葡萄'];
-      // 將正確答案和其他選項合併，並隨機排序
-      this.options = [correctAnswer, ...otherOptions].sort(() => Math.random() - 0.5);
-    },
-    // 檢查用戶選擇是否正確
-    checkAnswer(selected) {
-      if (selected === this.currentWord.correct) {
-        // 如果選擇正確，顯示反饋信息並在 1 秒後進入下一個詞彙
-        this.feedback = '選擇正確！';
-        setTimeout(() => {
-          this.nextWord();
-        }, 1000);
-      } else {
-        // 如果選擇錯誤，顯示錯誤信息
-        this.feedback = '選擇錯誤，請再試一次！';
+    next() {
+      if (this.page < this.vocabulary.length - 1) {
+        this.page++;
       }
     },
-    // 切換到下一個詞彙
-    nextWord() {
-      if (this.currentIndex < this.words.length - 1) {
-        // 如果還有詞彙未完成，切換到下一個詞彙
-        this.currentIndex++;
-        this.generateOptions();
-        this.feedback = '';
-      } else {
-        // 如果所有詞彙已完成，顯示完成信息
-        this.feedback = '所有詞彙已完成！';
-      }
-    },
+    onChange(newPage) {
+      this.page = newPage;
+    }
   },
-  // 組件掛載時生成初始選項
   mounted() {
-    this.fetchWords();
+    this.reset();
   },
 };
 </script>
 
 <style scoped>
-/* 詞彙卡片的樣式 */
-.vocabulary-card {
-  max-width: 400px;
-  margin: 0 auto;
+.exercise-card {
+  background:var(--p-content-background);
+  color:var(--p-content-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  border: 1px solid var(--p-surface-200);
+  display:flex;
+  flex-direction:column;
+  padding: 20px;
+  align-items: center;
+}
+
+.radio-button {
+  border-radius: 12px;
+  border: 1px solid var(--p-surface-300);
   text-align: center;
+  align-content: center;
+  color: var(--p-text-color);
+  user-select: none;
 }
 
-/* 詞彙標題的樣式 */
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+.radio-button-selected {
+  background-color: var(--p-primary-color);
+  color: var(--p-primary-100);
+  border: 1px solid var(--p-primary-color);
+  transition: background-color 0.3s, color 0.3s, border 0.3s;
 }
 
-/* 選項按鈕的佈局 */
-.options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-/* 按鈕的樣式 */
-button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-/* 按鈕的懸停效果 */
-button:hover {
-  background-color: #0056b3;
-}
-
-/* 反饋信息的樣式 */
-p {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: green;
+.end {
+  height: 100%;
 }
 </style>

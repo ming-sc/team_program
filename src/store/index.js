@@ -28,11 +28,6 @@ const mutations = {
       state.listeningProgress.push(question);
     }
   },
-  updateReadingProgress(question) {
-    if (!state.readingProgress.includes(question)) {
-      state.readingProgress.push(question);
-    }
-  },
 };
 
 export default {

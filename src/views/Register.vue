@@ -1,25 +1,51 @@
+<script setup>
+import {Toast} from "primevue";
+</script>
+
 <template>
-  <div>
-    <h1>註冊頁面</h1>
-    <form @submit.prevent="handleRegister">
-      <div>
-        <label for="username">用戶名：</label>
-        <input type="text" id="username" v-model="username" required />
+  <div class="login-container">
+    <div class="exercise-card" style="width: 100%;max-width: 800px; height: 400px">
+      <div style="flex: 0.5; display: flex; justify-content: center; align-items: center" >
+        <i class="pi pi-user-plus" style="font-size: 100px" />
       </div>
-      <div>
-        <label for="password">密碼：</label>
-        <input type="password" id="password" v-model="password" required />
+      <Divider layout="vertical" />
+      <div style="flex: 1; display: flex; justify-content: center; align-items: center;flex-direction: column">
+        <div style="width: 100%;display: flex;flex-direction: row-reverse">
+          <div class="view-more" @click="goToLogin">
+            <p>返回登录</p>
+            <i class="pi pi-angle-right" />
+          </div>
+        </div>
+        <InputGroup style="width: 100%;max-width: 450px;">
+          <InputGroupAddon>
+            <i class="pi pi-user"></i>
+          </InputGroupAddon>
+          <InputText v-model="username" size="large" placeholder="用户名" />
+        </InputGroup>
+        <InputGroup style="width: 100%;max-width: 450px;margin-top: 20px">
+          <InputGroupAddon>
+            <i class="pi pi-asterisk"></i>
+          </InputGroupAddon>
+          <InputText v-model="password" size="large" type="password" placeholder="密码" />
+        </InputGroup>
+        <InputGroup style="width: 100%;max-width: 450px;margin-top: 20px">
+          <InputGroupAddon>
+            <i class="pi pi-verified"></i>
+          </InputGroupAddon>
+          <InputText v-model="confirmPassword" size="large" type="password" placeholder="确认密码" />
+        </InputGroup>
+        <Button style="width: 100%;max-width: 450px;margin-top: 20px;height: 40px" @click="handlerRegister">
+          注册
+        </Button>
       </div>
-      <div>
-        <label for="confirmPassword">確認密碼：</label>
-        <input type="password" id="confirmPassword" v-model="confirmPassword" required />
-      </div>
-      <button type="submit">註冊</button>
-    </form>
+    </div>
   </div>
+  <Toast style="font-family: 微软雅黑,serif" />
 </template>
 
 <script>
+import {register} from "@/apis/user";
+
 export default {
   name: 'Register',
   data() {
@@ -30,41 +56,86 @@ export default {
     };
   },
   methods: {
-    handleRegister() {
+    handlerRegister() {
       if (this.password !== this.confirmPassword) {
-        alert('密碼不一致，請重新輸入');
+        this.$toast.add({
+          severity: 'warn',
+          summary: '两次输入的密码不一致'
+        });
         return;
       }
-      // 這裡可以添加註冊邏輯
-      alert(`用戶名：${this.username}，密碼：${this.password}`);
+      // 使用 apis/user.js 里的注册接口
+      register({userName: this.username, password: this.password})
+          .then(data => {
+            // 处理注册成功的情况
+            this.$toast.add({
+              severity: 'success',
+              summary: '注册成功',
+              detail: data.message,
+              life: 3000,
+            });
+            this.$router.push({ path: '/login' });
+          })
+          .catch(error => {
+            // 处理注册失败的情况
+            this.$toast.add({
+              severity: 'error',
+              summary: '注册失败',
+              detail: error,
+              life: 3000,
+            });
+          });
+    },
+    goToLogin() {
+      this.$router.push({ path: '/login' });
     },
   },
+  mounted() {
+    // 检查是否已经登录
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.$router.push({ path: '/'});
+    }
+  }
 };
 </script>
 
 <style scoped>
-form {
-  max-width: 300px;
-  margin: 0 auto;
-  text-align: left;
-}
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-input {
+.login-container {
+  height: 100%;
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+
+.exercise-card {
+  margin: 15px;
+  height: 150px;
+  background:var(--p-content-background);
+  color:var(--p-content-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  border: 1px solid var(--p-surface-200);
+  display:flex;
+  flex-direction:row;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.view-more {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  user-select: none;
   cursor: pointer;
+  padding-bottom: 15px;
+  padding-right: 15px;
 }
-button:hover {
-  background-color: #0056b3;
+.view-more p {
+  margin: 0;
 }
 </style>

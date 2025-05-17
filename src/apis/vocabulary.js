@@ -4,7 +4,7 @@ export function getPractices(count) {
     return request({
         url: "/vocabulary/getPractices",
         method: "get",
-        data: {
+        params: {
             count: count
         }
     });
@@ -25,9 +25,20 @@ export function getRecords(current, size) {
     return request({
         url: "/vocabulary/getRecords",
         method: "get",
-        data: {
+        params: {
             current: current,
             size: size
         }
+    });
+}
+
+export function add(data) {
+    return request({
+       url: "/vocabulary/add",
+       method: "post",
+       data: data,
+         headers: {
+              "Content-Type": "application/json"
+         }
     });
 }
