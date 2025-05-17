@@ -9,6 +9,7 @@ import com.code.cetboot.dto.AddReadingDTO;
 import com.code.cetboot.dto.ReadingPracticeDTO;
 import com.code.cetboot.entity.ReadingPractice;
 import com.code.cetboot.service.ReadingPracticeService;
+import com.code.cetboot.validation.AddReadingDTOValidation;
 import com.code.cetboot.validation.ReadingPracticeValidation;
 import com.code.cetboot.vo.reading.ReadingRecordsVO;
 import org.springframework.validation.annotation.Validated;
@@ -70,7 +71,7 @@ public class ReadingController {
     @PostMapping("/add")
     @SaCheckRole({Role.ADMIN_STRING})
     public Result add(
-            @Validated({ReadingPracticeValidation.class})
+            @Validated({AddReadingDTOValidation.class})
             @RequestBody AddReadingDTO addReadingDTO
     ) {
         return readingService.add(addReadingDTO);
