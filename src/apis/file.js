@@ -1,6 +1,6 @@
 import request from "@/apis/request";
 
-export function search(current, size, keyword) {
+export function search(current, size, keyword = "") {
     return request({
         url: "/file/search",
         method: "get",

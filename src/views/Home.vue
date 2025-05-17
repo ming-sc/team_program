@@ -97,6 +97,37 @@ import {Toast} from "primevue";
             </div>
           </TabPanel>
         </TabPanels>
+        <TabList style="position: relative">
+          <div class="view-more" @click="this.$router.push({ path: '/search/' })">
+            <p>查看更多</p>
+            <i class="pi pi-angle-right" />
+          </div>
+          <Tab value="0" style="font-size: x-large;font-weight: bold">学习资料</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel value="0">
+            <div class="exercise-container">
+              <Carousel
+                  content-class="exercise-content"
+                  container-class="container-class"
+                  style="width: 100%"
+                  :value="files"
+                  :numVisible="3"
+                  :numScroll="3"
+              >
+                <template #item="slotProps">
+                  <div @click="goToFile(slotProps.data.src)" class="exercise-card">
+                    <!-- 阅读图标 -->
+                    <i class="pi pi-file icon"></i>
+                    <p>
+                      {{slotProps.data.name}}
+                    </p>
+                  </div>
+                </template>
+              </Carousel>
+            </div>
+          </TabPanel>
+        </TabPanels>
         <TabList>
           <Tab value="0" style="font-size: x-large;font-weight: bold">词汇练习</Tab>
         </TabList>
@@ -128,6 +159,8 @@ import {Toast} from "primevue";
 <script>
 import {getPractices as getReadingPractices} from "@/apis/reading";
 import {getPractices as getListeningPractices} from "@/apis/listening";
+import {search} from "@/apis/file"
+import {BASE_URL} from "@/apis/request";
 
 export default {
   name: 'Home',
@@ -136,6 +169,8 @@ export default {
       reading: [
       ],
       listening: [
+      ],
+      files: [
       ],
     }
   },
@@ -177,10 +212,28 @@ export default {
     goToVocabulary() {
       this.$router.push({ path: '/vocabulary' });
     },
+    getFiles() {
+      search(1, 10)
+          .then(response => {
+            this.files = response.data.records;
+          })
+          .catch(e => {
+            this.$toast.add({
+              severity: 'error',
+              summary: '获取文件失败',
+              detail: e,
+              life: 3000,
+            });
+          });
+    },
+    goToFile(src) {
+      window.open(`${BASE_URL}${src}`);
+    }
   },
   mounted() {
     this.getReading();
     this.getListening();
+    this.getFiles();
   }
 };
 </script>

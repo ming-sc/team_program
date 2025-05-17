@@ -186,7 +186,6 @@ export default {
       this.updateRecord();
     },
     updateRecord() {
-      console.log(this.current);
       this.getRecords(this.current + 1, this.pageSize, this.currentRecordsType);
     },
     onPageChange(event) {

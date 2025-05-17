@@ -118,6 +118,15 @@ export default {
       this.exercises[exerciseIndex].selections.splice(index, 1);
     },
     checkExercise() {
+      if (this.exercises.length === 0) {
+        this.$toast.add({
+          severity: 'error',
+          summary: '错误',
+          detail: '请添加题目',
+          life: 3000
+        });
+        return false;
+      }
       // 检查每个题目的答案是否设置以及选项是否设置
       for (const exerciseKey in this.exercises) {
         const exercise = this.exercises[exerciseKey];

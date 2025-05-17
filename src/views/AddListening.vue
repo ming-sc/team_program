@@ -17,9 +17,9 @@ import TabPanels from "primevue/tabpanels";
             </Tab>
           </TabList>
           <TabPanels style="height: 100%">
-            <TabPanel style="height: 100%" active value="0">
+            <TabPanel style="height: 100%;display: flex;flex-direction: column" active value="0">
               <FileUpload v-if="isEdit" custom-upload mode="basic" accept="audio/*" choose-label="选择音频文件" @select="onFileSelect" />
-              <audio style="margin-top: 10px" v-if="audioFile" :src="audioFile" controls />
+              <audio style="margin-top: 10px;width: fit-content" v-if="audioFile" :src="audioFile" controls />
               <div :key="exercise.exerciseId" v-for="(exercise, exerciseIndex) in exercises" style="width: 100%; margin-top: 50px">
                 <div>
                   <p v-if="!isEdit" style="margin: 0;align-content: center">{{exercise.content}}</p>
@@ -90,7 +90,6 @@ export default {
   },
   methods: {
     onFileSelect(e) {
-      console.log(e);
       const file = e.files[0];
       const reader = new FileReader();
       this.audio = file;
@@ -122,6 +121,15 @@ export default {
       this.exercises[exerciseIndex].selections.splice(index, 1);
     },
     checkExercise() {
+      if (this.exercises.length === 0) {
+        this.$toast.add({
+          severity: 'error',
+          summary: '错误',
+          detail: '请添加题目',
+          life: 3000
+        });
+        return false;
+      }
       // 检查每个题目的答案是否设置以及选项是否设置
       for (const exerciseKey in this.exercises) {
         const exercise = this.exercises[exerciseKey];
