@@ -11,7 +11,7 @@ import {Toast} from "primevue";
       <Divider layout="vertical" />
       <div style="flex: 1; display: flex; justify-content: center; align-items: center;flex-direction: column">
         <div style="width: 100%;display: flex;flex-direction: row-reverse">
-          <div class="view-more" @click="this.$router.push({ path: '/login/' })">
+          <div class="view-more" @click="goToLogin">
             <p>返回登录</p>
             <i class="pi pi-angle-right" />
           </div>
@@ -85,7 +85,10 @@ export default {
               life: 3000,
             });
           });
-    }
+    },
+    goToLogin() {
+      this.$router.push({ path: '/login' });
+    },
   },
   mounted() {
     // 检查是否已经登录

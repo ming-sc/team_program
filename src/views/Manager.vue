@@ -33,19 +33,19 @@ import {Toast} from "primevue";
         </div>
       </div>
       <div style="width: 100%; display: flex; flex-direction: row">
-        <div @click="this.$router.push({ path: '/manager/addReading'})" class="exercise-card card-hover" style="margin: 0;flex: 1">
+        <div @click="goToAddReading" class="exercise-card card-hover" style="margin: 0;flex: 1">
           <div style="display: flex; flex-direction: column;align-items: center">
             <i class="pi pi-book icon" style="font-size: 70px;" />
             <p style="font-size: xx-large;margin: 10px 0 0;">导入阅读练习</p>
           </div>
         </div>
-        <div @click="this.$router.push({ path: '/manager/addListening'})" class="exercise-card card-hover" style="flex: 1; margin: 0 0 0 20px;">
+        <div @click="goToAddListening" class="exercise-card card-hover" style="flex: 1; margin: 0 0 0 20px;">
           <div style="display: flex; flex-direction: column;align-items: center">
             <i class="pi pi-volume-up icon" style="font-size: 70px;" />
             <p style="font-size: xx-large;margin: 10px 0 0;">导入听力练习</p>
           </div>
         </div>
-        <div @click="this.$router.push({ path: '/manager/addVocabulary'})" class="exercise-card card-hover" style="flex: 1; margin: 0 0 0 20px;">
+        <div @click="goToAddVocabulary" class="exercise-card card-hover" style="flex: 1; margin: 0 0 0 20px;">
           <div style="display: flex; flex-direction: column;align-items: center">
             <i class="pi pi-file-word icon" style="font-size: 70px;" />
             <p style="font-size: xx-large;margin: 10px 0 0;">导入词汇练习</p>
@@ -133,6 +133,15 @@ export default {
           .finally(() => {
             this.uploading = false;
           });
+    },
+    goToAddReading() {
+      this.$router.push({path: '/manager/addReading'});
+    },
+    goToAddListening() {
+      this.$router.push({path: '/manager/addListening'});
+    },
+    goToAddVocabulary() {
+      this.$router.push({path: '/manager/addVocabulary'});
     }
   },
   mounted() {

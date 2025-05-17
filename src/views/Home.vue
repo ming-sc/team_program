@@ -22,7 +22,7 @@ import {Toast} from "primevue";
     <div class="page">
       <Tabs value="0">
         <TabList style="position: relative">
-          <div class="view-more" @click="this.$router.push({ path: '/search/' })">
+          <div class="view-more" @click="goToSearch">
             <p>查看更多</p>
             <i class="pi pi-angle-right" />
           </div>
@@ -60,7 +60,7 @@ import {Toast} from "primevue";
           </TabPanel>
         </TabPanels>
         <TabList>
-          <div class="view-more" @click="this.$router.push({ path: '/search/' })">
+          <div class="view-more" @click="goToSearch">
             <p>查看更多</p>
             <i class="pi pi-angle-right" />
           </div>
@@ -98,7 +98,7 @@ import {Toast} from "primevue";
           </TabPanel>
         </TabPanels>
         <TabList style="position: relative">
-          <div class="view-more" @click="this.$router.push({ path: '/search/' })">
+          <div class="view-more" @click="goToSearch">
             <p>查看更多</p>
             <i class="pi pi-angle-right" />
           </div>
@@ -228,7 +228,10 @@ export default {
     },
     goToFile(src) {
       window.open(`${BASE_URL}${src}`);
-    }
+    },
+    goToSearch() {
+      this.$router.push({ path: '/search/' });
+    },
   },
   mounted() {
     this.getReading();

@@ -34,7 +34,7 @@ import {BASE_URL} from "@/apis/request";
   </div>
   <div class="empty-card" v-else>
     听力不存在
-    <Button style="margin: 40px" @click="this.$router.push({path: '/'})">返回主页</Button>
+    <Button style="margin: 40px" @click="goToHome">返回主页</Button>
   </div>
 
   <Toast />
@@ -121,6 +121,9 @@ export default {
 
       this.submitLock = false;
     },
+    goToHome() {
+      this.$router.push({path: '/'});
+    }
   },
   mounted() {
     this.listeningPracticeId = this.$route.params.id;

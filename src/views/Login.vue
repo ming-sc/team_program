@@ -11,7 +11,7 @@
       <Divider layout="vertical" />
       <div style="flex: 1; display: flex; justify-content: center; align-items: center;flex-direction: column">
         <div style="width: 100%;display: flex;flex-direction: row-reverse">
-          <div class="view-more" @click="this.$router.push({ path: '/register/' })">
+          <div class="view-more" @click="goToRegister">
             <p>前往注册</p>
             <i class="pi pi-angle-right" />
           </div>
@@ -75,6 +75,9 @@ export default {
                 life: 3000,
               });
           });
+    },
+    goToRegister() {
+      this.$router.push({ path: '/register' });
     },
   },
   mounted() {

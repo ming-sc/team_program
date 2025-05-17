@@ -44,7 +44,7 @@ import {Toast} from "primevue";
   </div>
   <div class="empty-card" v-else>
     阅读不存在
-    <Button style="margin: 40px" @click="this.$router.push({path: '/'})">返回主页</Button>
+    <Button style="margin: 40px" @click="goToHome">返回主页</Button>
   </div>
 
   <Toast />
@@ -130,7 +130,10 @@ export default {
             });
           });
       this.submitLock = false;
-    }
+    },
+    goToHome() {
+      this.$router.push({path: '/'});
+    },
   },
   mounted() {
     this.readingPracticeId = this.$route.params.id;

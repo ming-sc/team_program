@@ -22,11 +22,15 @@ const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/vocabulary', component: Vocabulary},
-  { path: '/listening/:id', component: Listening},
+  { path: '/vocabulary', component: Vocabulary },
+  { path: '/listening/', component: Listening },
+  { path: '/listening/:id', component: Listening },
+  { path: '/reading', component: Reading },
   { path: '/reading/:id', component: Reading },
   { path: '/practiceRecords', component: PracticeRecords },
+  { path: '/readingRecord/', component: ReadingRecord },
   { path: '/readingRecord/:id', component: ReadingRecord },
+  { path: '/listeningRecord/', component: ListeningRecord },
   { path: '/listeningRecord/:id', component: ListeningRecord },
   { path: '/search/:keyword', component: Search, name: 'Search' },
   { path: '/search', component: Search },
@@ -40,7 +44,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory("/cetBoot/"),
   routes,
 });
 
