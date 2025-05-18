@@ -1,6 +1,9 @@
 kind: pipeline
 type: docker
 name: build-and-deploy
+trigger:
+  branch:
+    - vue
 
 steps:
   - name: restore-cache
@@ -11,7 +14,7 @@ steps:
         - ./node_modules
     volumes:
       - name: npm-cache
-        path: /root/.npm
+        path: ./node_modules
 
   - name: build
     image: node:16
@@ -22,7 +25,7 @@ steps:
         from_secret: VUE_APP_BASE_URL
     commands:
       - mkdir -p /deploy
-      - npm config set cache /root/.npm --global
+      - npm config set cache ./node_modules --global
       - npm install
       - npm run build
       - cp -r dist/* /deploy
@@ -31,19 +34,17 @@ steps:
         path: /deploy
 
       - name: npm-cache
-        path: /root/.npm
+        path: ./node_modules
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
-    commands:
-      - mkdir -p /root/.npm
     settings:
       rebuild: true
       mount:
         - ./node_modules
     volumes:
       - name: npm-cache
-        path: /root/.npm
+        path: ./node_modules
 
 volumes:
   - name: deploy-volume
