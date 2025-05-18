@@ -18,6 +18,7 @@ steps:
       VUE_APP_BASE_URL:
         from_secret: VUE_APP_BASE_URL
     commands:
+      - mkdir -p /deploy
       - npm install
       - npm run build
       - cp -r dist/* /deploy
