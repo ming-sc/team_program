@@ -29,7 +29,6 @@ body {
   height: 100vh;
   box-sizing: border-box;
   margin: unset;
-  overflow: scroll;
 }
 
 /* 深色模式 */
@@ -44,7 +43,6 @@ body.dark-mode {
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
   height: 100%;
-  overflow: scroll;
 }
 
 h1 {

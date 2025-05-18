@@ -19,7 +19,7 @@ import TabPanels from "primevue/tabpanels";
           <TabPanels style="height: 100%">
             <TabPanel style="height: 100%;display: flex;flex-direction: column" active value="0">
               <FileUpload v-if="isEdit" custom-upload mode="basic" accept="audio/*" choose-label="选择音频文件" @select="onFileSelect" />
-              <audio style="margin-top: 10px;width: fit-content" v-if="audioFile" :src="audioFile" controls />
+              <audio style="margin-top: 10px;width: 400px" v-if="audioFile" :src="audioFile" controls />
               <div :key="exercise.exerciseId" v-for="(exercise, exerciseIndex) in exercises" style="width: 100%; margin-top: 50px">
                 <div>
                   <p v-if="!isEdit" style="margin: 0;align-content: center">{{exercise.content}}</p>
