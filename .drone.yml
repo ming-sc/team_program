@@ -22,6 +22,9 @@ steps:
       - npm install
       - npm run build
       - cp -r dist/* /deploy
+    volumes:
+      - name: deploy-volume
+        path: /deploy
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -31,9 +34,6 @@ steps:
       rebuild: true
       mount:
         - /root/.npm
-    volumes:
-      - name: deploy-volume
-        path: /deploy
 
 volumes:
   - name: deploy-volume
