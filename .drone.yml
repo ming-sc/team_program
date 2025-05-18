@@ -11,10 +11,10 @@ steps:
     settings:
       restore: true
       mount:
-        - ./node_modules
+        - /drone/src/node_modules
     volumes:
       - name: npm-cache
-        path: ./node_modules
+        path: /drone/src/node_modules
 
   - name: build
     image: node:16
@@ -25,7 +25,7 @@ steps:
         from_secret: VUE_APP_BASE_URL
     commands:
       - mkdir -p /deploy
-      - npm config set cache ./node_modules --global
+      - npm config set cache /drone/src/node_modules --global
       - npm install
       - npm run build
       - cp -r dist/* /deploy
@@ -34,17 +34,17 @@ steps:
         path: /deploy
 
       - name: npm-cache
-        path: ./node_modules
+        path: /drone/src/node_modules
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
     settings:
       rebuild: true
       mount:
-        - ./node_modules
+        - /drone/src/node_modules
     volumes:
       - name: npm-cache
-        path: ./node_modules
+        path: /drone/src/node_modules
 
 volumes:
   - name: deploy-volume
