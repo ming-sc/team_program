@@ -1,13 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import Login from '../views/Login.vue';
-import Register from '../views/Register.vue';
-import Vocabulary from '../views/Vocabulary.vue';
-import Listening from '../views/Listening.vue';
-import Reading from '../views/Reading.vue';
-import Statistics from '../views/Statistics.vue';
-import AdminUpload from '@/views/AdminUpload.vue';
-import AdminLogin from '@/views/AdminLogin.vue';
+import Home from '@/views/Home.vue';
+import Login from '@/views/Login.vue';
+import Register from '@/views/Register.vue';
+import Vocabulary from '@/views/Vocabulary.vue';
+import Listening from '@/views/Listening.vue';
+import Reading from '@/views/Reading.vue';
 import PracticeRecords from '@/views/ParcticeRecords.vue';
 import ReadingRecord from "@/views/ReadingRecord.vue";
 import ListeningRecord from "@/views/ListeningRecord.vue";
@@ -38,9 +35,6 @@ const routes = [
   { path: '/manager/addReading', component: AddReading, meta: {requiresAdmin: true} },
   { path: '/manager/addListening', component: AddListening, meta: {requiresAdmin: true} },
   { path: '/manager/addVocabulary', component: AddVocabulary, meta: {requiresAdmin: true} },
-  { path: '/statistics', component: Statistics, meta: { requiresAuth: true } },
-  { path: '/admin/login', component: AdminLogin },
-  { path: '/admin/upload', component: AdminUpload, meta: { requiresAdmin: true } },
 ];
 
 const router = createRouter({
