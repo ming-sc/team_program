@@ -9,6 +9,9 @@ steps:
       restore: true
       mount:
         - /root/.npm
+    volumes:
+      - name: npm-cache
+        path: /root/.npm
 
   - name: build
     image: node:16
@@ -19,12 +22,16 @@ steps:
         from_secret: VUE_APP_BASE_URL
     commands:
       - mkdir -p /deploy
+      - npm config set cache /root/.npm --global
       - npm install
       - npm run build
       - cp -r dist/* /deploy
     volumes:
       - name: deploy-volume
         path: /deploy
+
+      - name: npm-cache
+        path: /root/.npm
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -34,8 +41,15 @@ steps:
       rebuild: true
       mount:
         - /root/.npm
+    volumes:
+      - name: npm-cache
+        path: /root/.npm
 
 volumes:
   - name: deploy-volume
     host:
       path: /usr/local/cetBoot/dist
+
+  - name: npm-cache
+    host:
+      path: /root/.npm
