@@ -4,7 +4,7 @@ name: build-and-deploy
 
 steps:
   - name: build
-    image: node:18
+    image: node:16
     environment:
       VUE_APP_API_BASE_URL:
         from_secret: VUE_APP_API_BASE_URL
