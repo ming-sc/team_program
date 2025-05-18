@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-<!--    <NavBar />-->
     <Header></Header>
     <transition name="fade" mode="out-in">
       <div style="padding-top: 65px;height: 100%;box-sizing: border-box">
@@ -11,8 +10,6 @@
 </template>
 
 <script>
-// import NavBar from './components/NavBar.vue'
-// import ThemeToggle from './components/ThemeToggle.vue'
 
 import Header from "@/components/Header.vue";
 
@@ -20,8 +17,6 @@ export default {
   name: 'App',
   components: {
     Header
-    // NavBar,
-    // ThemeToggle
   }
 }
 </script>
