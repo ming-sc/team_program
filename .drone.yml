@@ -1,0 +1,25 @@
+kind: pipeline
+type: docker
+name: build-and-deploy
+
+steps:
+  - name: build
+    image: node:18
+    environment:
+      VUE_APP_API_BASE_URL:
+        from_secret: VUE_APP_API_BASE_URL
+      VUE_APP_BASE_URL:
+        from_secret: VUE_APP_BASE_URL
+    commands:
+      - npm install
+      - npm run build
+      - cp -r dist/* /deploy
+
+    volumes:
+      - name: deploy-volume
+        path: /deploy
+
+volumes:
+  - name: deploy-volume
+    host:
+      path: /usr/local/cetboot/dist
