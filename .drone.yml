@@ -29,7 +29,6 @@ steps:
       rebuild: true
       mount:
         - /root/.npm
-
     volumes:
       - name: deploy-volume
         path: /deploy
@@ -37,4 +36,4 @@ steps:
 volumes:
   - name: deploy-volume
     host:
-      path: /usr/local/cetboot/dist
+      path: /usr/local/cetBoot/dist
