@@ -25,6 +25,8 @@ steps:
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
+    commands:
+      - mkdir -p /root/.npm
     settings:
       rebuild: true
       mount:
